@@ -31,12 +31,15 @@ export default function CaptureTextScreen() {
       // Use AI to tag and categorize the content
       const aiResult = await AIService.tagContent(`${title} ${content}`);
       
+      // Extract tasks from content using AI
+      const extractedTasks = await AIService.extractTasks(content);
+      
       // Prepare knowledge item
       const knowledgeItem: Omit<KnowledgeItem, 'id' | 'createdAt' | 'updatedAt'> & { userId: string } = {
         title,
         content,
         type: isTask ? 'task' : aiResult.category, // Override type if marked as task
-        tags: aiResult.tags,
+        tags: [...aiResult.tags, ...(extractedTasks.length > 0 ? ['extracted-task'] : [])],
         // Use the current user ID from the store, or fallback to anonymous
         userId: currentUserId || 'anonymous',
       };
@@ -63,6 +66,11 @@ export default function CaptureTextScreen() {
         } catch (notifError) {
           console.error('Failed to schedule reminder:', notifError);
         }
+      }
+      
+      // Show extracted tasks if any
+      if (extractedTasks.length > 0) {
+        alert(`Extracted ${extractedTasks.length} task(s) from your note!`);
       }
       
       setSaving(false);

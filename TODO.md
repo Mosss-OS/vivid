@@ -36,7 +36,7 @@
 - [ ] Implement graph/connections view (using react-native-graph or similar)
 
 ### 6. Task & Insight Management
-- [ ] Implement AI-powered task extraction from notes
+- [x] Implement AI-powered task extraction from notes
 - [ ] Add smart reminders via Expo Push Notifications
 - [ ] Create habit/progress tracking for recurring insights
 
