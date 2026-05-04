@@ -17,7 +17,7 @@
 - [ ] Add AI auto-tagging and categorization on capture
 
 ### 3. Knowledge Feed / Home Screen
-- [ ] Connect to local database (Expo SQLite + Drizzle) for persistence
+- [x] Connect to local database (Expo SQLite + Drizzle) for persistence
 - [ ] Implement AI-generated daily insight card (backend integration)
 - [ ] Enhance search bar with natural language support
 - [ ] Add pull-to-refresh functionality
