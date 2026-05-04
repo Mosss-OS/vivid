@@ -37,7 +37,7 @@
 
 ### 6. Task & Insight Management
 - [ ] Implement AI-powered task extraction from notes
-- [ ] Add smart reminders via Expo Push Notifications
+- [x] Add smart reminders via Expo Push Notifications
 - [ ] Create habit/progress tracking for recurring insights
 
 ## Technical Enhancements
