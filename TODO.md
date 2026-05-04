@@ -31,7 +31,7 @@
 
 ### 5. Organization & Library
 - [ ] Create auto-organized sections (All Notes, Ideas, Tasks, Projects, People)
-- [ ] Implement manual tagging UI
+- [x] Implement manual tagging UI
 - [ ] Create folders system (optional)
 - [ ] Implement graph/connections view (using react-native-graph or similar)
 
