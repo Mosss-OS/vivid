@@ -13,7 +13,7 @@
 - [ ] Implement Voice Memo capture with real-time transcription
 - [x] Implement Photo/Image capture and gallery picker
 - [ ] Implement PDF/Document upload
-- [ ] Implement Link/Article save with preview
+- [x] Implement Link/Article save with preview
 - [ ] Add AI auto-tagging and categorization on capture
 
 ### 3. Knowledge Feed / Home Screen
