@@ -73,7 +73,7 @@ export const getScheduledNotifications = async () => {
 };
 
 // Daily AI insight notification
-export const scheduleDailyInsight = async () => {
+export const scheduleDailyInsight = async (insightText?: string) => {
   const hasPermission = await requestNotificationPermissions();
   if (!hasPermission) {
     console.log('Notification permissions not granted');
@@ -89,10 +89,27 @@ export const scheduleDailyInsight = async () => {
     await cancelNotification(dailyNotification.identifier);
   }
 
+  // Generate insight text if not provided
+  let notificationBody = insightText;
+  if (!notificationBody) {
+    try {
+      // Import AIService dynamically to avoid circular dependency
+      const { AIService } = require('./ai-service');
+      const response = await AIService.generateChatResponse(
+        'Generate a short daily insight (max 50 chars) based on my knowledge base',
+        [], // No specific items needed for general insight
+        []
+      );
+      notificationBody = response.response.substring(0, 50) + '...';
+    } catch (error) {
+      notificationBody = 'Check out today\'s AI-powered insights!';
+    }
+  }
+
   // Schedule for 9 AM daily
   await scheduleNotification(
     'Vivid Daily Insight',
-    'Check out today\'s AI-powered insights from your knowledge base!',
+    notificationBody,
     {
       hour: 9,
       minute: 0,

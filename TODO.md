@@ -69,7 +69,7 @@
 - [x] Focus on micro-interactions and feedback
 
 ### Additional Features
-- [ ] Create daily AI-powered "Insight of the Day" notification
+- [x] Create daily AI-powered "Insight of the Day" notification
 - [ ] Implement beautiful export options (PDF summary)
 - [ ] Add progress streaks or "Knowledge Momentum" visual
 - [ ] Build onboarding tooltips and guided tour
