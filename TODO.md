@@ -49,7 +49,7 @@
 
 ### Performance & Quality
 - [x] Implement rate limiting and cost control for AI calls
-- [ ] Add error boundaries and graceful degradation
+- [x] Add error boundaries and graceful degradation
 - [ ] Optimize performance (lazy loading, memoization)
 - [ ] Add deep linking support
 - [ ] Prepare share extension (future-proof)
