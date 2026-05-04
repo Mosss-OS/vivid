@@ -26,7 +26,7 @@
 - [x] Create dedicated "Ask Vivid" chat screen
 - [x] Implement AI chat with Groq (fallback to Gemini/OpenAI)
 - [x] Add citation/link referencing in chat responses
-- [ ] Implement conversation context for follow-up questions
+- [x] Implement conversation context for follow-up questions
 - [x] Integrate with local knowledge base for RAG
 
 ### 5. Organization & Library
