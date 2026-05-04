@@ -62,7 +62,7 @@
 ## Polish & UX
 
 ### Visual Design
-- [ ] Implement minimalist, calm aesthetic with soft dark/light mode
+- [x] Implement minimalist, calm aesthetic with soft dark/light mode
 - [ ] Apply generous whitespace and beautiful typography (Inter or Satoshi)
 - [ ] Add smooth animations: card entrances, FAB morph, chat bubbles, loading states
 - [ ] Implement glassmorphism or subtle depth effects
