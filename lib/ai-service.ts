@@ -81,6 +81,12 @@ export type ChatResponse = {
 export class AIService {
   // Tag and categorize content
   static async tagContent(content: string): Promise<TaggingResult> {
+    // Check rate limits
+    if (!canMakeRequest(50)) {
+      console.warn('Rate limit exceeded, using fallback tagging');
+      return AIService.basicTagging(content);
+    }
+    
     try {
       // Try Groq first
       if (groq) {
@@ -101,6 +107,7 @@ export class AIService {
           response_format: { type: "json_object" }
         });
 
+        logRequest(50);
         const result = JSON.parse(completion.choices[0].message.content);
         return {
           tags: result.tags || [],
