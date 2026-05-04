@@ -1,9 +1,51 @@
 import { PrivyProvider, usePrivy, useAuth } from '@privy-io/expo';
 import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState, Component, ReactNode } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from '../lib/theme';
+
+// Error Boundary Component
+class ErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error('Error caught by boundary:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+            Something went wrong
+          </Text>
+          <Text style={{ color: '#666', textAlign: 'center', marginBottom: 20 }}>
+            {this.state.error?.message || 'An unexpected error occurred'}
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.setState({ hasError: false, error: null })}
+            style={{ padding: 10, backgroundColor: '#007AFF', borderRadius: 8 }}
+          >
+            <Text style={{ color: 'white' }}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 // Prevent auto-hiding of splash screen until we explicitly call hide
 useEffect(() => {
@@ -60,18 +102,20 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <PrivyProvider
-      appId="cmolgs0n2014f0dl80cgfiktw"
-      loginMethods={{
-        email: true,
-        google: true,
-        apple: true,
-      }}
-    >
-      <ThemeProvider>
-        <RootLayoutNav />
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </PrivyProvider>
+    <ErrorBoundary>
+      <PrivyProvider
+        appId="cmolgs0n2014f0dl80cgfiktw"
+        loginMethods={{
+          email: true,
+          google: true,
+          apple: true,
+        }}
+      >
+        <ThemeProvider>
+          <RootLayoutNav />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </PrivyProvider>
+    </ErrorBoundary>
   );
 }
