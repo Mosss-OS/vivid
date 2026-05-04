@@ -6,7 +6,7 @@
 - [x] Implement Privy authentication flow (email, social, wallet)
 - [x] Create welcome screens with animations
 - [x] Build quick profile setup screen (name + bio)
-- [ ] Add user profile display in app
+- [x] Add user profile display in app
 
 ### 2. Capture Anything
 - [ ] Complete Text Note capture screen (basic implementation done)

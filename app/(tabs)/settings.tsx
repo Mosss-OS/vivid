@@ -1,14 +1,33 @@
-import { View, Text, SafeAreaView, Platform, Switch } from 'react-native';
+import { View, Text, SafeAreaView, Platform, Switch, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
 import { User, Moon, Bell, Download, Shield, Info, ChevronRight } from 'lucide-react-native';
 import { useTheme } from '../../lib/theme';
 import { useKnowledgeStore } from '../../lib/store';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const { isDark, toggleTheme, theme, setTheme } = useTheme();
   const { items, currentUserId } = useKnowledgeStore();
+  const [userName, setUserName] = useState('');
+  const [userBio, setUserBio] = useState('');
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    try {
+      const name = await SecureStore.getItemAsync('vivid_user_name');
+      const bio = await SecureStore.getItemAsync('vivid_user_bio');
+      if (name) setUserName(name);
+      if (bio) setUserBio(bio);
+    } catch (error) {
+      console.error('Failed to load profile:', error);
+    }
+  };
 
   const handleClearData = async () => {
     // In a real app, you'd want to confirm this action
@@ -51,36 +70,40 @@ export default function SettingsScreen() {
         </MotiView>
 
         {/* User Profile Section */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ delay: 100 }}
-          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
-          style={{
-            ...(Platform.OS === 'android' && { elevation: 2 }),
-            ...(Platform.OS === 'ios' && { 
-              shadowColor: '#000', 
-              shadowOffset: { width: 0, height: 1 }, 
-              shadowOpacity: 0.1, 
-              shadowRadius: 2 
-            }),
-          }}
+        <TouchableOpacity
+          onPress={() => router.push('/(auth)/profile-setup')}
         >
-          <View className="flex-row items-center">
-            <View className={`w-16 h-16 rounded-full items-center justify-center ${isDark ? 'bg-blue-900' : 'bg-blue-100'}`}>
-              <User size={32} color={isDark ? '#60a5fa' : '#3b82f6'} />
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ delay: 100 }}
+            className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+            style={{
+              ...(Platform.OS === 'android' && { elevation: 2 }),
+              ...(Platform.OS === 'ios' && { 
+                shadowColor: '#000', 
+                shadowOffset: { width: 0, height: 1 }, 
+                shadowOpacity: 0.1, 
+                shadowRadius: 2 
+              }),
+            }}
+          >
+            <View className="flex-row items-center">
+              <View className={`w-16 h-16 rounded-full items-center justify-center ${isDark ? 'bg-blue-900' : 'bg-blue-100'}`}>
+                <User size={32} color={isDark ? '#60a5fa' : '#3b82f6'} />
+              </View>
+              <View className="ml-4 flex-1">
+                <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                  {userName || (currentUserId ? 'Authenticated User' : 'Guest User')}
+                </Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`} numberOfLines={1}>
+                  {userBio || (currentUserId ? 'Logged in' : 'Not logged in')}
+                </Text>
+              </View>
+              <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
             </View>
-            <View className="ml-4 flex-1">
-              <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                {currentUserId ? 'Authenticated User' : 'Guest User'}
-              </Text>
-              <Text className={isDark ? 'text-gray-400' : 'text-gray-500'}>
-                {currentUserId ? 'Logged in' : 'Not logged in'}
-              </Text>
-            </View>
-            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
-          </View>
-        </MotiView>
+          </MotiView>
+        </TouchableOpacity>
 
         {/* Appearance */}
         <MotiView
