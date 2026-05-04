@@ -190,7 +190,7 @@ export default function SettingsScreen() {
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 400 }}
-          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          className={`p-4 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'}`}
         >
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             NOTIFICATIONS
@@ -209,6 +209,39 @@ export default function SettingsScreen() {
               thumbColor="#f3f4f6"
             />
           </TouchableOpacity>
+        </MotiView>
+
+        {/* Progress Tracking */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 450 }}
+          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+        >
+          <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            PROGRESS
+          </Text>
+          
+          <View className="flex-row items-center justify-between py-3">
+            <View className="flex-row items-center">
+              <Text className="text-2xl mr-3">📈</Text>
+              <View>
+                <Text className={isDark ? 'text-white' : 'text-gray-900'}>
+                  Knowledge Streak
+                </Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {items.filter(item => {
+                    const today = new Date();
+                    const itemDate = new Date(item.createdAt);
+                    return itemDate.toDateString() === today.toDateString();
+                  }).length} items today
+                </Text>
+              </View>
+            </View>
+            <Text className="text-2xl font-bold text-primary">
+              {Math.min(items.length, 30)}
+            </Text>
+          </View>
         </MotiView>
 
         {/* About */}
