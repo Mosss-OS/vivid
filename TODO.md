@@ -9,7 +9,7 @@
 - [x] Add user profile display in app
 
 ### 2. Capture Anything
-- [ ] Complete Text Note capture screen (basic implementation done)
+- [x] Complete Text Note capture screen (basic implementation done)
 - [ ] Implement Voice Memo capture with real-time transcription
 - [ ] Implement Photo/Image capture and gallery picker
 - [ ] Implement PDF/Document upload
