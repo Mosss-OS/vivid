@@ -1,23 +1,39 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
+import { AIService } from '../lib/ai-service';
+import { useKnowledgeStore } from '../lib/store';
 
 export default function AIDailyInsightCard() {
   const [insight, setInsight] = useState('Generating your daily insight...');
   const [loading, setLoading] = useState(true);
+  const { items } = useKnowledgeStore();
 
   useEffect(() => {
-    // Simulate AI-generated insight
     const generateInsight = async () => {
       setLoading(true);
-      // In real app, this would call AI API
-      setTimeout(() => {
-        setInsight('Today you captured 7 ideas about React Native and 2 tasks. Your most productive time was between 2-4 PM.');
+      try {
+        // Generate insight based on user's knowledge items
+        const itemsSummary = items.slice(0, 10).map(item => `${item.title}: ${item.content.substring(0, 100)}`).join('\n');
+        const response = await AIService.chatWithKnowledge([
+          { role: 'system', content: 'Generate a daily insight based on the user\'s recent captures. Keep it concise and actionable.' },
+          { role: 'user', content: `Here are my recent captures:\n${itemsSummary}\n\nGenerate a daily insight.` }
+        ]);
+        setInsight(response.response);
+      } catch (error) {
+        console.error('Failed to generate insight:', error);
+        setInsight('Keep capturing your thoughts! Your second brain is growing.');
+      } finally {
         setLoading(false);
-      }, 1500);
+      }
     };
 
-    generateInsight();
-  }, []);
+    if (items.length > 0) {
+      generateInsight();
+    } else {
+      setInsight('Start capturing your thoughts to get daily AI insights!');
+      setLoading(false);
+    }
+  }, [items]);
 
   if (loading) {
     return (
