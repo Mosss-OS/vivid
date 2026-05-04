@@ -1,7 +1,6 @@
 {
   "name": "vivid",
   "version": "1.0.0",
-  "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,13 +8,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~54.0.33",
+    "expo": "^55.0.19",
+    "expo-secure-store": "^55.0.13",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.80.0"
   },
   "devDependencies": {
-    "@types/react": "~19.1.0",
+    "@types/react": "19.1.17",
     "typescript": "~5.9.2"
   },
   "private": true
