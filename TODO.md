@@ -57,7 +57,7 @@
 
 ### Security
 - [x] Implement end-to-end encryption for sensitive notes (where possible)
-- [ ] Use Expo SecureStore for sensitive data
+- [x] Use Expo SecureStore for sensitive data
 
 ## Polish & UX
 
