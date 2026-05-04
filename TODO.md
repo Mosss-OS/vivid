@@ -20,7 +20,7 @@
 - [x] Connect to local database (Expo SQLite + Drizzle) for persistence
 - [ ] Implement AI-generated daily insight card (backend integration)
 - [ ] Enhance search bar with natural language support
-- [ ] Add pull-to-refresh functionality
+- [x] Add pull-to-refresh functionality
 
 ### 4. AI Chat with Knowledge Base ✅ (Basic Integration Complete)
 - [x] Create dedicated "Ask Vivid" chat screen
