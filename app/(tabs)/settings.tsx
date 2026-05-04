@@ -57,12 +57,39 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#1a1a2e' : '#f5f5f5' }}>
-      <View className="flex-1 p-6">
+      <View className="p-6">
         {/* Header */}
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
           className="mb-8"
+        >
+          <Text className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Settings
+          </Text>
+        </MotiView>
+
+        {/* User Profile Section - Glassmorphism */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 100 }}
+          style={{
+            backgroundColor: isDark ? 'rgba(45, 45, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 24,
+            padding: 16,
+            marginBottom: 24,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
         >
           <Text className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
             Settings
@@ -105,12 +132,27 @@ export default function SettingsScreen() {
           </MotiView>
         </TouchableOpacity>
 
-        {/* Appearance */}
+        {/* Appearance - Glassmorphism */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 200 }}
-          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          style={{
+            backgroundColor: isDark ? 'rgba(45, 45, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 24,
+            padding: 16,
+            marginBottom: 24,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
         >
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             APPEARANCE
@@ -142,12 +184,27 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </MotiView>
 
-        {/* Data & Storage */}
+        {/* Data & Storage - Glassmorphism */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 300 }}
-          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          style={{
+            backgroundColor: isDark ? 'rgba(45, 45, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 24,
+            padding: 16,
+            marginBottom: 24,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
         >
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             DATA & STORAGE
@@ -185,12 +242,27 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </MotiView>
 
-        {/* Notifications */}
+        {/* Notifications - Glassmorphism */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 400 }}
-          className={`p-4 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          style={{
+            backgroundColor: isDark ? 'rgba(45, 45, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 24,
+            padding: 16,
+            marginBottom: 24,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
         >
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             NOTIFICATIONS
@@ -244,12 +316,27 @@ export default function SettingsScreen() {
           </View>
         </MotiView>
 
-        {/* About */}
+        {/* About - Glassmorphism */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ delay: 500 }}
-          className={`p-4 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          style={{
+            backgroundColor: isDark ? 'rgba(45, 45, 68, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 24,
+            padding: 16,
+            marginBottom: 24,
+            borderWidth: 1,
+            borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
         >
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             ABOUT
