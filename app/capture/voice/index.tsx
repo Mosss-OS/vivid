@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Platform, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Mic, Stop, Check } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
-import { MotiView, MotiProps } from 'moti';
+import { MotiView } from 'moti';
+import * as SpeechRecognition from 'expo-speech-recognition';
 
 export default function CaptureVoiceScreen() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export default function CaptureVoiceScreen() {
   const [recordingTime, setRecordingTime] = useState(0);
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState('');
+  const [transcription, setTranscription] = useState('');
+  const [isTranscribing, setIsTranscribing] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -42,6 +45,23 @@ export default function CaptureVoiceScreen() {
       setAudio(sound);
       await sound.recordAsync();
       setRecording(true);
+      
+      // Start speech recognition for real-time transcription
+      try {
+        setIsTranscribing(true);
+        await SpeechRecognition.start({
+          onResult: (result) => {
+            if (result.value) {
+              setTranscription(prev => prev + ' ' + result.value);
+            }
+          },
+          onError: (error) => {
+            console.error('Speech recognition error:', error);
+          },
+        });
+      } catch (srError) {
+        console.error('Failed to start speech recognition:', srError);
+      }
     } catch (error) {
       console.error('Failed to start recording', error);
       alert('Failed to start recording. Please check microphone permissions.');
@@ -53,6 +73,14 @@ export default function CaptureVoiceScreen() {
       await audio.stopAndUnloadAsync();
       const uri = audio.getURI();
       
+      // Stop speech recognition
+      try {
+        await SpeechRecognition.stop();
+        setIsTranscribing(false);
+      } catch (srError) {
+        console.error('Failed to stop speech recognition:', srError);
+      }
+      
       // Save recording temporarily
       const fileUri = `${FileSystem.documentUri}voice-recording-${Date.now()}.m4a`;
       await FileSystem.moveAsync({ from: uri, to: fileUri });
@@ -60,15 +88,11 @@ export default function CaptureVoiceScreen() {
       setAudio(null);
       setRecording(false);
       
-      // Prompt for title
-      const inputTitle = prompt('Enter a title for your voice memo:');
-      if (inputTitle !== null) {
-        setTitle(inputTitle || `Voice Memo ${new Date().toLocaleTimeString()}`);
-        // In real app, save to database and navigate back
-        setTimeout(() => {
-          router.back();
-        }, 500);
-      }
+      // Set title with transcription preview
+      const transcriptionPreview = transcription 
+        ? transcription.substring(0, 50) + (transcription.length > 50 ? '...' : '')
+        : `Voice Memo ${new Date().toLocaleTimeString()}`;
+      setTitle(transcriptionPreview);
     }
   };
 
@@ -122,7 +146,7 @@ export default function CaptureVoiceScreen() {
               {[1, 2, 3, 4, 5].map((i) => (
                 <View
                   key={i}
-                  className={`h-4 w-1 bg-primary/20 rounded ${
+                  className={`h-4 w-1 rounded ${
                     recordingTime % 10 > i * 2 ? 'bg-primary' : 'bg-primary/20'
                   }`}
                   style={{
@@ -151,7 +175,17 @@ export default function CaptureVoiceScreen() {
                 .toString()
                 .padStart(2, '0')}
             </Text>
+            {isTranscribing && (
+              <Text className="text-sm text-green-500 mt-2">Transcribing...</Text>
+            )}
           </View>
+        )}
+
+        {/* Live Transcription Display */}
+        {recording && transcription && (
+          <ScrollView className="max-h-32 mb-6 p-4 bg-gray-50 rounded-lg">
+            <Text className="text-sm text-gray-700">{transcription}</Text>
+          </ScrollView>
         )}
 
         {/* Title Input (shown after recording) */}
