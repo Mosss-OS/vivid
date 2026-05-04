@@ -6,8 +6,15 @@ import type { KnowledgeItem } from '../../types/knowledge';
 
 export default function LibraryScreen() {
   const router = useRouter();
-  const [knowledgeItems, setKnowledgeItems] = useState<KnowledgeItem[]>([]);
-  const [activeTab, setActiveTab] = useState<'all' | 'ideas' | 'tasks' | 'insights' | 'projects' | 'people' | 'references'>('all');
+  const { items: knowledgeItems } = useKnowledgeStore();
+  const [activeTab, setActiveTab] = useState<'all' | 'ideas' | 'tasks' | 'insights' | 'projects' | 'people' | 'references' | 'folders'>('all');
+  const [folders, setFolders] = useState<Array<{ id: string; name: string; itemIds: string[] }>>([
+    { id: '1', name: 'Work', itemIds: [] },
+    { id: '2', name: 'Personal', itemIds: [] },
+    { id: '3', name: 'References', itemIds: [] }
+  ]);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
 
   // Mock data for demo - in real app, this would come from local DB
   useEffect(() => {
@@ -75,7 +82,13 @@ export default function LibraryScreen() {
   }, []);
 
   const filteredItems = knowledgeItems.filter(
-    (item) => activeTab === 'all' || item.type === activeTab
+    (item) => {
+      if (activeTab === 'folders' && selectedFolder) {
+        const folder = folders.find(f => f.id === selectedFolder);
+        return folder?.itemIds.includes(item.id) || false;
+      }
+      return activeTab === 'all' || item.type === activeTab;
+    }
   );
 
   const getTabLabel = (tab: typeof activeTab) => {
@@ -126,10 +139,13 @@ export default function LibraryScreen() {
         {/* Tabs */}
         <View className="mb-6">
           <View className="flex-row space-x-4 overflow-x-auto pb-2">
-            {['all', 'idea', 'task', 'insight', 'project', 'person', 'reference'].map((tab) => (
+            {['all', 'idea', 'task', 'insight', 'project', 'person', 'reference', 'folders'].map((tab) => (
               <TouchableOpacity
                 key={tab}
-                onPress={() => setActiveTab(tab as typeof activeTab)}
+                onPress={() => {
+                  setActiveTab(tab as typeof activeTab);
+                  if (tab !== 'folders') setSelectedFolder(null);
+                }}
                 className={`px-4 py-2 rounded-lg ${
                   activeTab === tab 
                     ? 'bg-primary/20 text-primary font-medium' 
@@ -142,6 +158,49 @@ export default function LibraryScreen() {
             ))}
           </View>
         </View>
+
+        {/* Folders View */}
+        {activeTab === 'folders' && (
+          <View className="mb-6">
+            <View className="flex-row flex-wrap gap-3 mb-4">
+              {folders.map((folder) => (
+                <TouchableOpacity
+                  key={folder.id}
+                  onPress={() => setSelectedFolder(folder.id)}
+                  className={`px-4 py-3 rounded-lg ${
+                    selectedFolder === folder.id
+                      ? 'bg-primary text-white'
+                      : 'bg-gray-100'
+                  }`}
+                >
+                  <Text className={selectedFolder === folder.id ? 'text-white' : 'text-gray-700'}>
+                    📁 {folder.name} ({folder.itemIds.length})
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            
+            {/* Add New Folder */}
+            <View className="flex-row items-center">
+              <TextInput
+                value={newFolderName}
+                onChangeText={setNewFolderName}
+                placeholder="New folder name..."
+                className="flex-1 border-b border-gray-300 pb-1"
+                onSubmitEditing={() => {
+                  if (newFolderName.trim()) {
+                    setFolders([...folders, {
+                      id: Date.now().toString(),
+                      name: newFolderName.trim(),
+                      itemIds: []
+                    }]);
+                    setNewFolderName('');
+                  }
+                }}
+              />
+            </View>
+          </View>
+        )}
 
         {/* Stats */}
         <View className="flex-row space-x-6 mb-6 text-sm text-muted-foreground">
