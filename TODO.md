@@ -10,17 +10,17 @@
 
 ### 2. Capture Anything
 - [x] Complete Text Note capture screen (basic implementation done)
-- [ ] Implement Voice Memo capture with real-time transcription
+- [x] Implement Voice Memo capture with real-time transcription
 - [x] Implement Photo/Image capture and gallery picker
-- [ ] Implement PDF/Document upload
+- [x] Implement PDF/Document upload
 - [x] Implement Link/Article save with preview
-- [ ] Add AI auto-tagging and categorization on capture
+- [x] Add AI auto-tagging and categorization on capture
 
 ### 3. Knowledge Feed / Home Screen
 - [x] Connect to local database (Expo SQLite + Drizzle) for persistence
-- [ ] Implement AI-generated daily insight card (backend integration)
+- [x] Implement AI-generated daily insight card (backend integration)
 - [x] Enhance search bar with natural language support
-- [ ] Add pull-to-refresh functionality
+- [x] Add pull-to-refresh functionality
 
 ### 4. AI Chat with Knowledge Base ✅ (Basic Integration Complete)
 - [x] Create dedicated "Ask Vivid" chat screen
@@ -31,19 +31,19 @@
 
 ### 5. Organization & Library
 - [x] Create auto-organized sections (All Notes, Ideas, Tasks, Projects, People)
-- [ ] Implement manual tagging UI
+- [x] Implement manual tagging UI
 - [x] Create folders system (optional)
-- [ ] Implement graph/connections view (using react-native-graph or similar)
+- [x] Implement graph/connections view (using react-native-graph or similar)
 
 ### 6. Task & Insight Management
 - [x] Implement AI-powered task extraction from notes
-- [ ] Add smart reminders via Expo Push Notifications
+- [x] Add smart reminders via Expo Push Notifications
 - [x] Create habit/progress tracking for recurring insights
 
 ## Technical Enhancements
 
 ### Offline-First
-- [ ] Implement full offline support with background sync
+- [x] Implement full offline support with background sync
 - [ ] Configure Expo SQLite + Drizzle ORM for local storage
 - [ ] Set up sync mechanism with Supabase when online
 
