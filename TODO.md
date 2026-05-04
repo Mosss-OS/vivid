@@ -14,7 +14,7 @@
 - [x] Implement Photo/Image capture and gallery picker
 - [ ] Implement PDF/Document upload
 - [ ] Implement Link/Article save with preview
-- [ ] Add AI auto-tagging and categorization on capture
+- [x] Add AI auto-tagging and categorization on capture
 
 ### 3. Knowledge Feed / Home Screen
 - [ ] Connect to local database (Expo SQLite + Drizzle) for persistence
