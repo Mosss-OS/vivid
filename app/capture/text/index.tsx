@@ -1,8 +1,9 @@
-import { View, Text, TextInput, SafeAreaView, Platform, Switch, DatePickerAndroid, DatePickerIOS } from 'react-native';
+import { View, Text, TextInput, SafeAreaView, Platform, Switch } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Check, Clock, Bell } from 'lucide-react-native';
-import { MotiView, MotiProps } from 'moti';
+import { MotiView } from 'moti';
+import { TouchableOpacity } from 'react-native';
 import { AIService } from '../../lib/ai-service';
 import { useKnowledgeStore } from '../../lib/store';
 import { scheduleTaskReminder } from '../../lib/notifications';
@@ -85,18 +86,18 @@ export default function CaptureTextScreen() {
             <Text className="text-primary text-lg">←</Text>
           </TouchableOpacity>
           <Text className="text-xl font-bold">New Text Note</Text>
-          <Text className="text-primary text-lg" onPress={handleSave} disabled={saving}>
+          <TouchableOpacity onPress={handleSave} disabled={saving}>
             {saving ? (
               <MotiView
-                style={{ width: 20, height: 20, borderRadius: 50, borderWidth: 2, borderColor: 'white' }}
-                initial={{ rotate: 0 }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1000, repeat: Infinity }}
+                style={{ width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#3b82f6' }}
+                from={{ rotate: '0deg' }}
+                animate={{ rotate: '360deg' }}
+                transition={{ type: 'timing', duration: 1000, loop: true }}
               />
             ) : (
-              <Check size={20} color="white" />
+              <Check size={20} color="#3b82f6" />
             )}
-          </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Form */}
