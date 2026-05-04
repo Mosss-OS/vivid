@@ -4,6 +4,7 @@ import { useEffect, useState, Component, ReactNode } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from '../lib/theme';
+import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@fontsource/inter';
 
 // Error Boundary Component
 class ErrorBoundary extends Component<
