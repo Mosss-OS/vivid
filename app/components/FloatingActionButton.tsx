@@ -13,9 +13,10 @@ type CaptureOption = {
 
 type Props = {
   options: CaptureOption[];
+  isDark?: boolean;
 };
 
-export default function FloatingActionButton({ options }: Props) {
+export default function FloatingActionButton({ options, isDark = false }: Props) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,12 +40,15 @@ export default function FloatingActionButton({ options }: Props) {
       }}
     >
       <MotiView
+        from={{ rotate: '0deg' }}
+        animate={{ rotate: isOpen ? '45deg' : '0deg' }}
+        transition={{ type: 'spring', damping: 15 }}
         whileTap={{ scale: 0.95 }}
         style={{
           width: 64,
           height: 64,
           borderRadius: 32,
-          backgroundColor: '#007AFF',
+          backgroundColor: isOpen ? '#FF6B6B' : '#007AFF',
           justifyContent: 'center',
           alignItems: 'center',
         }}
@@ -58,13 +62,13 @@ export default function FloatingActionButton({ options }: Props) {
       </MotiView>
 
       {isOpen && (
-        <View style={{ position: 'absolute', bottom: 80, right: 24 }}>
+        <View style={{ position: 'absolute', bottom: 80, right: 0 }}>
           {options.map((option, index) => (
             <MotiView
               key={option.label}
               style={{
                 marginBottom: 12,
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                backgroundColor: isDark ? 'rgba(45, 45, 68, 0.9)' : 'rgba(0, 0, 0, 0.7)',
                 paddingHorizontal: 16,
                 paddingVertical: 10,
                 borderRadius: 20,
@@ -73,9 +77,9 @@ export default function FloatingActionButton({ options }: Props) {
                 ...(Platform.OS === 'android' && { elevation: 4 }),
                 ...(Platform.OS === 'ios' && { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 2 }),
               }}
-              initial={{ x: 30 }}
-              animate={{ x: 0 }}
-              transition={{ delay: index * 0.05, type: 'spring' }}
+              initial={{ x: 30, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: index * 0.05, type: 'spring', damping: 15 }}
               onPress={() => handleOptionPress(option.route)}
             >
               <option.icon size={20} color="white" style={{ marginRight: 12 }} />
