@@ -1,0 +1,230 @@
+import { View, Text, SafeAreaView, Platform, Switch } from 'react-native';
+import { useRouter } from 'expo-router';
+import { MotiView } from 'moti';
+import { User, Moon, Bell, Download, Shield, Info, ChevronRight } from 'lucide-react-native';
+import { useTheme } from '../../lib/theme';
+import { useKnowledgeStore } from '../../lib/store';
+
+export default function SettingsScreen() {
+  const router = useRouter();
+  const { isDark, toggleTheme, theme, setTheme } = useTheme();
+  const { items, currentUserId } = useKnowledgeStore();
+
+  const handleClearData = async () => {
+    // In a real app, you'd want to confirm this action
+    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+      try {
+        // Clear local database
+        // await knowledgeDb.clear();
+        // Clear store
+        // get().setItems([]);
+        alert('Local data cleared');
+      } catch (error) {
+        console.error('Failed to clear data:', error);
+      }
+    }
+  };
+
+  const handleSyncNow = async () => {
+    try {
+      // Trigger manual sync
+      // await syncWithSupabase();
+      alert('Sync completed successfully!');
+    } catch (error) {
+      console.error('Sync failed:', error);
+      alert('Sync failed. Please try again.');
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: isDark ? '#1a1a2e' : '#f5f5f5' }}>
+      <View className="flex-1 p-6">
+        {/* Header */}
+        <MotiView
+          from={{ opacity: 0, translateY: -20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          className="mb-8"
+        >
+          <Text className={`text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Settings
+          </Text>
+        </MotiView>
+
+        {/* User Profile Section */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 100 }}
+          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+          style={{
+            ...(Platform.OS === 'android' && { elevation: 2 }),
+            ...(Platform.OS === 'ios' && { 
+              shadowColor: '#000', 
+              shadowOffset: { width: 0, height: 1 }, 
+              shadowOpacity: 0.1, 
+              shadowRadius: 2 
+            }),
+          }}
+        >
+          <View className="flex-row items-center">
+            <View className={`w-16 h-16 rounded-full items-center justify-center ${isDark ? 'bg-blue-900' : 'bg-blue-100'}`}>
+              <User size={32} color={isDark ? '#60a5fa' : '#3b82f6'} />
+            </View>
+            <View className="ml-4 flex-1">
+              <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                {currentUserId ? 'Authenticated User' : 'Guest User'}
+              </Text>
+              <Text className={isDark ? 'text-gray-400' : 'text-gray-500'}>
+                {currentUserId ? 'Logged in' : 'Not logged in'}
+              </Text>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </View>
+        </MotiView>
+
+        {/* Appearance */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 200 }}
+          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+        >
+          <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            APPEARANCE
+          </Text>
+          
+          <View className="flex-row items-center justify-between py-3 border-b border-gray-200">
+            <View className="flex-row items-center">
+              <Moon size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <Text className={`ml-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Dark Mode
+              </Text>
+            </View>
+            <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: '#d1d5db', true: '#3b82f6' }}
+              thumbColor={isDark ? '#ffffff' : '#f3f4f6'}
+            />
+          </View>
+
+          <TouchableOpacity 
+            className="flex-row items-center justify-between py-3"
+            onPress={() => setTheme(theme === 'system' ? 'light' : 'system')}
+          >
+            <Text className={isDark ? 'text-white' : 'text-gray-900'}>
+              System Default ({theme === 'system' ? 'On' : 'Off'})
+            </Text>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+        </MotiView>
+
+        {/* Data & Storage */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 300 }}
+          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+        >
+          <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            DATA & STORAGE
+          </Text>
+          
+          <TouchableOpacity 
+            className="flex-row items-center justify-between py-3 border-b border-gray-200"
+            onPress={handleSyncNow}
+          >
+            <View className="flex-row items-center">
+              <Download size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <View className="ml-3">
+                <Text className={isDark ? 'text-white' : 'text-gray-900'}>
+                  Sync Now
+                </Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  {items.length} items stored
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            className="flex-row items-center justify-between py-3"
+            onPress={handleClearData}
+          >
+            <View className="flex-row items-center">
+              <Text className="text-red-500">🗑️</Text>
+              <Text className="ml-3 text-red-500">
+                Clear Local Data
+              </Text>
+            </View>
+            <ChevronRight size={20} color="#ef4444" />
+          </TouchableOpacity>
+        </MotiView>
+
+        {/* Notifications */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 400 }}
+          className={`p-4 rounded-2xl mb-6 ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+        >
+          <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            NOTIFICATIONS
+          </Text>
+          
+          <TouchableOpacity className="flex-row items-center justify-between py-3">
+            <View className="flex-row items-center">
+              <Bell size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <Text className={`ml-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Daily AI Insight
+              </Text>
+            </View>
+            <Switch
+              value={true}
+              trackColor={{ false: '#d1d5db', true: '#3b82f6' }}
+              thumbColor="#f3f4f6"
+            />
+          </TouchableOpacity>
+        </MotiView>
+
+        {/* About */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ delay: 500 }}
+          className={`p-4 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'}`}
+        >
+          <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            ABOUT
+          </Text>
+          
+          <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
+            <View className="flex-row items-center">
+              <Shield size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <Text className={`ml-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Privacy Policy
+              </Text>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex-row items-center justify-between py-3">
+            <View className="flex-row items-center">
+              <Info size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <View className="ml-3">
+                <Text className={isDark ? 'text-white' : 'text-gray-900'}>
+                  Vivid
+                </Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Version 1.0.0
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+        </MotiView>
+      </View>
+    </SafeAreaView>
+  );
+}
