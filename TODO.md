@@ -45,7 +45,7 @@
 ### Offline-First
 - [x] Implement full offline support with background sync
 - [ ] Configure Expo SQLite + Drizzle ORM for local storage
-- [ ] Set up sync mechanism with Supabase when online
+- [x] Set up sync mechanism with Supabase when online
 
 ### Performance & Quality
 - [ ] Implement rate limiting and cost control for AI calls
