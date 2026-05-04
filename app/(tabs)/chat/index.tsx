@@ -43,10 +43,20 @@ export default function ChatScreen() {
       const lastMessage = messages[messages.length - 1];
       const userInput = lastMessage.text;
 
+      // Build conversation history (excluding the latest message)
+      const conversationHistory = messages
+        .slice(0, -1)
+        .filter(msg => msg.text)
+        .map(msg => ({
+          role: msg.user._id === '1' ? 'user' as const : 'assistant' as const,
+          content: msg.text
+        }));
+
       // Call AI service with RAG (using knowledge items as context)
       const aiResponse = await AIService.generateChatResponse(
         userInput,
-        knowledgeItems
+        knowledgeItems,
+        conversationHistory
       );
 
       // Add AI response to messages

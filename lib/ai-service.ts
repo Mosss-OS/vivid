@@ -111,7 +111,8 @@ export class AIService {
   // Generate chat response with RAG
   static async generateChatResponse(
     message: string,
-    knowledgeItems: Array<any>
+    knowledgeItems: Array<any>,
+    conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
   ): Promise<ChatResponse> {
     try {
       // Try Groq first
@@ -120,6 +121,27 @@ export class AIService {
         const context = knowledgeItems
           .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
           .join('\n');
+
+        // Build messages array with conversation history
+        const messages = [
+          {
+            role: "system",
+            content: `You are Vivid, an AI-powered Second Brain assistant. 
+                      Use the provided knowledge items to answer the user's question. 
+                      Always cite specific items when referencing information by mentioning the title.
+                      If you don't know something from the knowledge base, say so.
+                      Keep responses concise but informative.`
+          },
+          // Add conversation history for context
+          ...conversationHistory.map(msg => ({
+            role: msg.role === 'assistant' ? "assistant" : "user",
+            content: msg.content
+          })),
+          {
+            role: "user",
+            content: `Knowledge Base:\n${context}\n\nQuestion: ${message}`
+          }
+        ];
 
         const completion = await groq.chat.completions.create({
           messages: [
@@ -168,27 +190,35 @@ export class AIService {
     }
 
     try {
-      // Fallback to Gemini for chat
-      if (gemini) {
-        const model = gemini.getGenerativeModel({ model: "gemini-pro" });
-        
-        // Prepare context
-        const context = knowledgeItems
-          .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
-          .join('\n');
-
-        const prompt = `
-          You are Vivid, an AI-powered Second Brain assistant. 
-          Use the provided knowledge items to answer the user's question. 
-          Always cite specific items when referencing information.
-          If you don't know something from the knowledge base, say so.
-          Keep responses concise but informative.
+        // Fallback to Gemini for chat
+        if (gemini) {
+          const model = gemini.getGenerativeModel({ model: "gemini-pro" });
           
-          Knowledge Base:
-          ${context}
+          // Prepare context
+          const context = knowledgeItems
+            .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
+            .join('\n');
           
-          Question: ${message}
-        `;
+          // Build conversation history for Gemini
+          const historyText = conversationHistory
+            .map(msg => `${msg.role === 'user' ? 'User' : 'Vivid'}: ${msg.content}`)
+            .join('\n');
+          
+          const prompt = `
+            You are Vivid, an AI-powered Second Brain assistant. 
+            Use the provided knowledge items to answer the user's question. 
+            Always cite specific items when referencing information.
+            If you don't know something from the knowledge base, say so.
+            Keep responses concise but informative.
+            
+            Previous Conversation:
+            ${historyText}
+            
+            Knowledge Base:
+            ${context}
+            
+            Question: ${message}
+          `;
         
         const result = await model.generateContent(prompt);
         const response = await result.response;
