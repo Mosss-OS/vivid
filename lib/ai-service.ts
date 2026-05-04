@@ -320,16 +320,64 @@ export class AIService {
     );
     
     if (relevantItems.length === 0) {
-      return {
-        response: "I don't see any specific information about that in your knowledge base yet. Try capturing some notes first, or ask about something else!",
-        citations: [],
-        suggestedFollowUps: [
-          "What do I have in my knowledge base?",
-          "Help me capture a new note",
-          "Show me my recent items"
-        ]
-      };
+    return {
+      response: response,
+      citations: [],
+      suggestedFollowUps: [
+        "What do I have in my knowledge base?",
+        "Help me capture a new note",
+        "Show me my recent items"
+      ]
+    };
+  }
+
+  // Extract tasks from notes using AI
+  static async extractTasks(content: string): Promise<Array<{ title: string; description: string; dueDate?: string }>> {
+    try {
+      if (groq) {
+        const completion = await groq.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: "You are a task extraction AI. Analyze the content and extract any tasks, action items, or to-dos. Return JSON array with title, description, and optional dueDate fields."
+            },
+            {
+              role: "user",
+              content: `Extract tasks from this content:\n\n${content}`
+            }
+          ],
+          model: "mixtral-8x7b-32768",
+          temperature: 0.3,
+          max_tokens: 300,
+          response_format: { type: "json_object" }
+        });
+
+        const result = JSON.parse(completion.choices[0].message.content);
+        return result.tasks || [];
+      }
+    } catch (error) {
+      console.error('Task extraction failed:', error);
     }
+
+    // Fallback: simple keyword-based extraction
+    return AIService.basicTaskExtraction(content);
+  }
+
+  // Basic task extraction fallback
+  private static basicTaskExtraction(content: string): Array<{ title: string; description: string }> {
+    const tasks: Array<{ title: string; description: string }> = [];
+    const lowerContent = content.toLowerCase();
+    
+    if (lowerContent.includes('todo') || lowerContent.includes('task') || lowerContent.includes('need to')) {
+      tasks.push({
+        title: 'Extracted Task',
+        description: content.substring(0, 100)
+      });
+    }
+    
+    return tasks;
+  }
+}
     
     // Generate simple response
     const response = `I found ${relevantItems.length} relevant item${relevantItems.length > 1 ? 's' : ''} in your knowledge base:\n\n` +
