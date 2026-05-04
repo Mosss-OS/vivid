@@ -12,7 +12,7 @@
 - [x] Complete Text Note capture screen (basic implementation done)
 - [ ] Implement Voice Memo capture with real-time transcription
 - [ ] Implement Photo/Image capture and gallery picker
-- [ ] Implement PDF/Document upload
+- [x] Implement PDF/Document upload
 - [ ] Implement Link/Article save with preview
 - [ ] Add AI auto-tagging and categorization on capture
 

@@ -83,29 +83,29 @@ export default function CaptureDocumentScreen() {
             <Text className="text-primary text-lg">←</Text>
           </TouchableOpacity>
           <Text className="text-xl font-bold">Document Scan</Text>
-          <TouchableOpacity
-            onPress={handleSave}
-            disabled={!documentUri || saving}
-            className="p-2 rounded-full"
-            style={{
-              backgroundColor: !documentUri || saving ? '#ccc' : '#007AFF',
-              width: 56,
-              height: 56,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            {saving ? (
-              <MotiView
-                style={{ width: 20, height: 20, borderRadius: 50, borderWidth: 2, borderColor: 'white' }}
-                initial={{ rotate: 0 }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1000, repeat: Infinity }}
-              />
-            ) : (
-              <Check size={20} color="white" />
-            )}
-          </TouchableOpacity>
+           <TouchableOpacity
+             onPress={handleSave}
+             disabled={!documentUri || saving}
+             className="p-2 rounded-full"
+             style={{
+               backgroundColor: !documentUri || saving ? '#ccc' : '#007AFF',
+               width: 56,
+               height: 56,
+               justifyContent: 'center',
+               alignItems: 'center',
+             }}
+           >
+             {saving ? (
+               <MotiView
+                 style={{ width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: 'white' }}
+                 from={{ rotate: '0deg' }}
+                 animate={{ rotate: '360deg' }}
+                 transition={{ type: 'timing', duration: 1000, loop: true }}
+               />
+             ) : (
+               <Check size={20} color="white" />
+             )}
+           </TouchableOpacity>
         </View>
 
         {/* Document Preview or Placeholder */}
