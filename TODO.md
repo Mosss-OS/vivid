@@ -64,7 +64,7 @@
 ### Visual Design
 - [x] Implement minimalist, calm aesthetic with soft dark/light mode
 - [x] Apply generous whitespace and beautiful typography (Inter or Satoshi)
-- [ ] Add smooth animations: card entrances, FAB morph, chat bubbles, loading states
+- [x] Add smooth animations: card entrances, FAB morph, chat bubbles, loading states
 - [x] Implement glassmorphism or subtle depth effects
 - [x] Focus on micro-interactions and feedback
 
