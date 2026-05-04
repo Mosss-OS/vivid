@@ -13,6 +13,52 @@ const gemini = geminiApiKey
   ? new GoogleGenerativeAI({ apiKey: geminiApiKey })
   : null;
 
+// Rate limiting
+const requestLog: Array<{ timestamp: number; tokens: number }> = [];
+const MAX_REQUESTS_PER_MINUTE = 10;
+const MAX_TOKENS_PER_DAY = 10000;
+let dailyTokensUsed = 0;
+let dailyResetTime = new Date().setHours(24, 0, 0, 0);
+
+function canMakeRequest(tokens: number = 100): boolean {
+  const now = Date.now();
+  
+  // Reset daily tokens if needed
+  if (now > dailyResetTime) {
+    dailyTokensUsed = 0;
+    dailyResetTime = new Date().setHours(24, 0, 0, 0);
+  }
+  
+  // Check daily token limit
+  if (dailyTokensUsed + tokens > MAX_TOKENS_PER_DAY) {
+    console.warn('Daily token limit reached');
+    return false;
+  }
+  
+  // Check per-minute rate limit
+  const oneMinuteAgo = now - 60000;
+  const recentRequests = requestLog.filter(req => req.timestamp > oneMinuteAgo);
+  if (recentRequests.length >= MAX_REQUESTS_PER_MINUTE) {
+    console.warn('Rate limit reached');
+    return false;
+  }
+  
+  return true;
+}
+
+function logRequest(tokens: number = 100) {
+  const now = Date.now();
+  requestLog.push({ timestamp: now, tokens });
+  dailyTokensUsed += tokens;
+  
+  // Clean up old entries
+  const fiveMinutesAgo = now - 300000;
+  const index = requestLog.findIndex(req => req.timestamp < fiveMinutesAgo);
+  if (index > -1) {
+    requestLog.splice(0, index + 1);
+  }
+}
+
 // Types for AI responses
 export type TaggingResult = {
   tags: string[];
