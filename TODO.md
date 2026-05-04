@@ -33,7 +33,7 @@
 - [x] Create auto-organized sections (All Notes, Ideas, Tasks, Projects, People)
 - [ ] Implement manual tagging UI
 - [ ] Create folders system (optional)
-- [ ] Implement graph/connections view (using react-native-graph or similar)
+- [x] Implement graph/connections view (using react-native-graph or similar)
 
 ### 6. Task & Insight Management
 - [ ] Implement AI-powered task extraction from notes
