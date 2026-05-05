@@ -29,7 +29,7 @@ export default function LogoLoader({ size = 120 }: { size?: number }) {
         }}
       >
         <Image
-          source={{ uri: 'https://res.cloudinary.com/dv0tt80vn/image/upload/v1777551455/vivid_cynifa.png' }}
+          source={{ uri: 'https://res.cloudinary.com/dv0tt80vn/image/upload/v1777983153/vivid_l3khgo.png' }}
           style={{
             width: size,
             height: size,
