@@ -341,7 +341,29 @@ export default function SettingsScreen() {
           <Text className={`text-sm font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
             ABOUT
           </Text>
-          
+           
+          <TouchableOpacity 
+            className="flex-row items-center justify-between py-3 border-b border-gray-200"
+            onPress={async () => {
+              try {
+                const { exportToPDF } = require('../../lib/export');
+                await exportToPDF(items, 'Vivid Knowledge Summary');
+                alert('PDF exported successfully!');
+              } catch (error) {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again.');
+              }
+            }}
+          >
+            <View className="flex-row items-center">
+              <Download size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <Text className={`ml-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+                Export to PDF
+              </Text>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+           
           <TouchableOpacity className="flex-row items-center justify-between py-3 border-b border-gray-200">
             <View className="flex-row items-center">
               <Shield size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
