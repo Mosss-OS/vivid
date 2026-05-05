@@ -34,7 +34,29 @@ export type KnowledgeItemDB = typeof knowledgeItemsTable.$inferSelect;
 export type NewKnowledgeItem = typeof knowledgeItemsTable.$inferInsert;
 
 // Initialize database
-export const db = drizzle(SQLite.openDatabase('vivid.db'));
+const sqlite = SQLite.openDatabase('vivid.db');
+export const db = drizzle(sqlite);
+
+// Create table if not exists (raw SQL for initial setup)
+sqlite.execSync(`
+  CREATE TABLE IF NOT EXISTS knowledge_items (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    type TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    tags TEXT DEFAULT '[]',
+    audio_url TEXT,
+    image_url TEXT,
+    pdf_url TEXT,
+    link_url TEXT,
+    is_favorite INTEGER DEFAULT 0,
+    synced INTEGER DEFAULT 0,
+    sync_id TEXT
+  );
+`);
 
 // Database operations
 export const knowledgeDb = {
