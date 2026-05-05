@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { FloatingActionButton } from './components/FloatingActionButton';
 import { KnowledgeCard } from './components/KnowledgeCard';
 import { AIDailyInsightCard } from './components/AIDailyInsightCard';
+import { KnowledgeMomentum } from './components/KnowledgeMomentum';
 import { SearchBar } from './components/SearchBar';
 import type { KnowledgeItem } from './types/knowledge';
 import { Plus, Mic, Image, FileText, Link2 } from 'lucide-react-native';
@@ -94,6 +95,7 @@ export default function HomeScreen() {
       <View className={`p-4 ${isDark ? 'bg-dark-background' : 'bg-light-background'}`}>
         <SearchBar onSearch={handleSearch} />
         <AIDailyInsightCard />
+        <KnowledgeMomentum />
         <FlatList
           data={memoizedItems}
           keyExtractor={(item) => item.id}
@@ -159,6 +161,7 @@ export default function HomeScreen() {
       <View className={`p-4 ${isDark ? 'bg-dark-background' : 'bg-light-background'}`}>
         <SearchBar onSearch={(query) => router.push(`/search?q=${query}`)} />
         <AIDailyInsightCard />
+        <KnowledgeMomentum />
         <FlatList
           data={knowledgeItems}
           keyExtractor={(item) => item.id}
