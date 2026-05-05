@@ -83,7 +83,7 @@
 ## DevOps & Deployment
 - [x] Set up EAS Build for Expo
 - [x] Create clean GitHub repo with comprehensive README
-- [ ] Produce 2-3 minute demo video script
+- [x] Produce 2-3 minute demo video script
 - [ ] Prepare app store listings and screenshots
 
 ## Testing
