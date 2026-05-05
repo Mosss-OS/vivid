@@ -35,7 +35,7 @@ export default function WelcomeScreen() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < onboardingSteps.length - 1) {
       setIsAnimating(true);
       setTimeout(() => {
