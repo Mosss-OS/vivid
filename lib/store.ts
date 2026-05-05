@@ -54,20 +54,29 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
   init: async () => {
     set({ loading: true, error: null });
     try {
-      // Get current user from Supabase
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        set({ currentUserId: user.id });
+      // Initialize database first
+      await knowledgeDb.init();
+      
+      // Get current user from Supabase (optional)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          set({ currentUserId: user.id });
+        }
+      } catch (authError) {
+        console.log('No authenticated user, using anonymous mode');
       }
       
       // Load items from local database
-      const items = await knowledgeDb.getItems(user?.id || 'anonymous');
+      const userId = get().currentUserId || 'anonymous';
+      const items = await knowledgeDb.getItems(userId);
       set({ items, loading: false });
     } catch (error: any) {
       console.error('Failed to initialize knowledge store:', error);
+      // Don't show error, just set loading to false and continue
       set({ 
         loading: false, 
-        error: error.message || 'Failed to initialize knowledge store' 
+        error: null
       });
     }
   },
