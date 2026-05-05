@@ -3,7 +3,7 @@
     "name": "vivid",
     "slug": "vivid",
     "version": "1.0.0",
-    "sdkVersion": "54.0.0",
+    "entryPoint": "./node_modules/expo-router/entry",
     "orientation": "portrait",
     "icon": "./assets/vivid-logo-new.png",
     "userInterfaceStyle": "light",
