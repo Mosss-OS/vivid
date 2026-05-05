@@ -2,7 +2,7 @@ import { View, Text, FlatList, TextInput, SafeAreaView, Platform, ActivityIndica
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { AiChat, Send, Mic } from 'lucide-react-native';
-import { AIService } from '../../lib/ai-service.ts';
+import { AIService } from '../../lib/ai-service';
 import { useKnowledgeStore } from '../../lib/store';
 import type { KnowledgeItem } from '../../types/knowledge';
 
