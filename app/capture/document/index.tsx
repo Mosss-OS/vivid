@@ -24,7 +24,7 @@ export default function CaptureDocumentScreen() {
 
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
-        setDocumentUri.assetUri || asset.uri);
+        setDocumentUri(asset.uri || asset.uri);
         
         // Determine file type
         const extension = asset.uri.split('.').pop()?.toLowerCase() || '';
