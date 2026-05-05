@@ -1,5 +1,5 @@
 import { View, Text, FlatList, RefreshControl, SafeAreaView, useColorScheme } from 'react-native';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { FloatingActionButton } from './components/FloatingActionButton';
 import { KnowledgeCard } from './components/KnowledgeCard';
@@ -11,6 +11,8 @@ import { Plus, Mic, Image, FileText, Link2 } from 'lucide-react-native';
 import { useKnowledgeStore, useTheme } from '../../lib/store';
 import { useTheme as useAppTheme } from '../../lib/theme';
 import { memo } from 'react';
+import { getDemoItems, isDemoMode } from '../../lib/demo-data';
+import LogoLoader from './components/LogoLoader';
 
 // Memoized Knowledge Card wrapper
 const MemoizedKnowledgeCard = memo(({ item, onPress, isDark }: { item: KnowledgeItem; onPress: (item: KnowledgeItem) => void; isDark: boolean }) => (
@@ -22,10 +24,13 @@ export default function HomeScreen() {
   const { items: knowledgeItems, loading, error, init, fetchItems, saveItems, backgroundSync } = useKnowledgeStore();
   const { isDark } = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
+  const [demoItems] = useState<KnowledgeItem[]>(() => getDemoItems());
 
   // Initialize store on mount
   useEffect(() => {
-    init();
+    if (!isDemoMode()) {
+      init();
+    }
   }, [init]);
 
   // Background sync when app comes to foreground
@@ -66,14 +71,19 @@ export default function HomeScreen() {
   }, [router]);
 
   // Memoize FlatList data
-  const memoizedItems = useMemo(() => knowledgeItems, [knowledgeItems]);
+  const memoizedItems = useMemo(() => 
+    isDemoMode() ? demoItems : knowledgeItems
+  , [knowledgeItems, demoItems]);
 
   // Render loading or error states
-  if (loading && knowledgeItems.length === 0) {
+  if (loading && knowledgeItems.length === 0 && !isDemoMode()) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: isDark ? '#1a1a2e' : '#ffffff' }}>
         <View className="flex-1 items-center justify-center">
-          <Text>Loading your knowledge...</Text>
+          <LogoLoader size={120} />
+          <Text className={`mt-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Loading your knowledge...
+          </Text>
         </View>
       </SafeAreaView>
     );
