@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/vivid-logo.png",
+        "foregroundImage": "./assets/vivid-logo-new.png",
         "backgroundColor": "#1a1a2e"
       },
       "package": "com.vivid.app",
