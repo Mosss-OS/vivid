@@ -16,7 +16,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.vivid.app",
-      "associatedDomains": ["applinks:vivid.app"],
+      "associatedDomains": [
+        "applinks:vivid.app"
+      ],
       "icon": "./assets/vivid-logo.png"
     },
     "android": {
@@ -34,7 +36,10 @@
               "host": "*.vivid.app"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -44,6 +49,10 @@
     "scheme": "vivid",
     "deepLinking": {
       "enabled": true
-    }
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store"
+    ]
   }
 }
