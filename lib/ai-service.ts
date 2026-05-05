@@ -1,5 +1,5 @@
-import { Groq } from 'groq-sdk';
-import { GoogleGenerativeAI } from '@google-ai/generativelanguage';
+import { Groq } from 'groq';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Initialize AI clients
 const groqApiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY || 'dummy_key_for_dev';
