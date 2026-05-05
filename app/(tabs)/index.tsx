@@ -1,18 +1,18 @@
 import { View, Text, FlatList, RefreshControl, SafeAreaView, useColorScheme } from 'react-native';
 import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { FloatingActionButton } from './components/FloatingActionButton';
-import { KnowledgeCard } from './components/KnowledgeCard';
-import { AIDailyInsightCard } from './components/AIDailyInsightCard';
-import { KnowledgeMomentum } from './components/KnowledgeMomentum';
-import { SearchBar } from './components/SearchBar';
-import type { KnowledgeItem } from './types/knowledge';
+import { FloatingActionButton } from '../components/FloatingActionButton';
+import { KnowledgeCard } from '../components/KnowledgeCard';
+import { AIDailyInsightCard } from '../components/AIDailyInsightCard';
+import { KnowledgeMomentum } from '../components/KnowledgeMomentum';
+import { SearchBar } from '../components/SearchBar';
+import type { KnowledgeItem } from '../types/knowledge';
 import { Plus, Mic, Image, FileText, Link2 } from 'lucide-react-native';
 import { useKnowledgeStore, useTheme } from '../../lib/store';
 import { useTheme as useAppTheme } from '../../lib/theme';
 import { memo } from 'react';
 import { getDemoItems, isDemoMode } from '../../lib/demo-data';
-import LogoLoader from './components/LogoLoader';
+import LogoLoader from '../components/LogoLoader';
 
 // Memoized Knowledge Card wrapper
 const MemoizedKnowledgeCard = memo(({ item, onPress, isDark }: { item: KnowledgeItem; onPress: (item: KnowledgeItem) => void; isDark: boolean }) => (
