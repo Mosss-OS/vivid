@@ -70,7 +70,7 @@
 
 ### Additional Features
 - [x] Create daily AI-powered "Insight of the Day" notification
-- [ ] Implement beautiful export options (PDF summary)
+- [x] Implement beautiful export options (PDF summary)
 - [ ] Add progress streaks or "Knowledge Momentum" visual
 - [ ] Build onboarding tooltips and guided tour
 - [ ] Create high-quality demo-ready states with sample data
