@@ -84,7 +84,7 @@
 - [x] Set up EAS Build for Expo
 - [x] Create clean GitHub repo with comprehensive README
 - [x] Produce 2-3 minute demo video script
-- [ ] Prepare app store listings and screenshots
+- [x] Prepare app store listings and screenshots
 
 ## Testing
 - [ ] Write unit tests for core logic
