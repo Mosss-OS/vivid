@@ -72,7 +72,7 @@
 - [x] Create daily AI-powered "Insight of the Day" notification
 - [x] Implement beautiful export options (PDF summary)
 - [x] Add progress streaks or "Knowledge Momentum" visual
-- [ ] Build onboarding tooltips and guided tour
+- [x] Build onboarding tooltips and guided tour
 - [ ] Create high-quality demo-ready states with sample data
 
 ### Assets
