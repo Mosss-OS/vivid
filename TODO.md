@@ -76,8 +76,8 @@
 - [x] Create high-quality demo-ready states with sample data
 
 ### Assets
-- [ ] Design app icon (Vivid wordmark with subtle glow/gradient)
-- [ ] Create splash screen
+- [x] Design app icon (Vivid wordmark with subtle glow/gradient)
+- [x] Create splash screen
 - [ ] Prepare privacy policy and terms for submission
 
 ## DevOps & Deployment
