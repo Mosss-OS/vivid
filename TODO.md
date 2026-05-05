@@ -78,7 +78,7 @@
 ### Assets
 - [x] Design app icon (Vivid wordmark with subtle glow/gradient)
 - [x] Create splash screen
-- [ ] Prepare privacy policy and terms for submission
+- [x] Prepare privacy policy and terms for submission
 
 ## DevOps & Deployment
 - [x] Set up EAS Build for Expo
