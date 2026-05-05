@@ -29,11 +29,12 @@ export default function LogoLoader({ size = 120 }: { size?: number }) {
         }}
       >
         <Image
-          source={{ uri: 'https://res.cloudinary.com/dv0tt80vn/image/upload/v1777983153/vivid_l3khgo.png' }}
+          source={{ uri: 'https://res.cloudinary.com/dv0tt80vn/image/upload/v1777986190/vivid_round_bjmide.png' }}
           style={{
             width: size,
             height: size,
             resizeMode: 'contain',
+            borderRadius: size / 2,
           }}
         />
       </MotiView>

@@ -4,11 +4,11 @@
     "slug": "vivid",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/vivid-logo-new.png",
+    "icon": "./assets/vivid-logo-round.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/vivid-logo-new.png",
+      "image": "./assets/vivid-logo-round.png",
       "resizeMode": "contain",
       "backgroundColor": "#1a1a2e"
     },
@@ -18,11 +18,11 @@
       "associatedDomains": [
         "applinks:vivid.app"
       ],
-      "icon": "./assets/vivid-logo-new.png"
+      "icon": "./assets/vivid-logo-round.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/vivid-logo-new.png",
+        "foregroundImage": "./assets/vivid-logo-round.png",
         "backgroundColor": "#1a1a2e"
       },
       "package": "com.vivid.app",
