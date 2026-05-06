@@ -1,5 +1,22 @@
 # Vivid - AI-Powered Second Brain Mobile App
 
+![React Native](https://img.shields.io/badge/-React%20Native-61DAFB?style=flat-square&logo=react&logoColor=white)
+![Expo](https://img.shields.io/badge/-Expo-000020?style=flat-square&logo=expo&logoColor=white)
+![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![AI](https://img.shields.io/badge/-AI-FF6B6B?style=flat-square&logo=openai&logoColor=white)
+![Gemini](https://img.shields.io/badge/-Gemini-8E75B2?style=flat-square&logo=google&logoColor=white)
+![Groq](https://img.shields.io/badge/-Groq-111827?style=flat-square&logo=groq&logoColor=white)
+![Privy](https://img.shields.io/badge/-Privy-00A8FF?style=flat-square&logo=privy&logoColor=white)
+![SQLite](https://img.shields.io/badge/-SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![Drizzle ORM](https://img.shields.io/badge/-Drizzle%20ORM-C5F74F?style=flat-square&logo=drizzle&logoColor=black)
+![Zustand](https://img.shields.io/badge/-Zustand-764ABC?style=flat-square&logo=react&logoColor=white)
+![Tailwind](https://img.shields.io/badge/-Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Moti](https://img.shields.io/badge/-Moti-FF4154?style=flat-square&logo=react&logoColor=white)
+![RAG](https://img.shields.io/badge/-RAG-00C7B7?style=flat-square&logo=ai&logoColor=white)
+![Offline First](https://img.shields.io/badge/-Offline%20First-FFA500?style=flat-square&logo=offline&logoColor=white)
+![Mobile App](https://img.shields.io/badge/-Mobile%20App-4CAF50?style=flat-square&logo=android&logoColor=white)
+![Knowledge Management](https://img.shields.io/badge/-Knowledge%20Management-9C27B0?style=flat-square&logo=bookstack&logoColor=white)
+
 Vivid is a beautiful, fast, and intelligent AI-powered Second Brain mobile app. Users capture thoughts, notes, voice memos, images, PDFs, and links — the AI automatically organizes everything, finds connections, and lets users chat naturally with their entire personal knowledge base.
 
 ## 📊 Development Phase: **Backend Integration & Local Database** (Phase 3 of 4)
