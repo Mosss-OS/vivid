@@ -1,10 +1,11 @@
 import { View, Text, FlatList, TextInput, SafeAreaView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'expo-router';
-import { Send, Mic, Volume2 } from 'lucide-react-native';
+import { Send, Mic, Volume2, VolumeX } from 'lucide-react-native';
+import { Audio } from 'expo-av';
 import { AIService } from '../../../lib/ai-service';
 import { useKnowledgeStore } from '../../../lib/store';
-import { getLanguageDisplayName } from '../../../lib/sarvam';
+import { getLanguageDisplayName, textToSpeech } from '../../../lib/sarvam';
 import * as Haptics from 'expo-haptics';
 
 type Message = {
@@ -30,7 +31,9 @@ export default function ChatScreen() {
   const [inputText, setInputText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isAiThinking, setIsAiThinking] = useState(false);
+  const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
   const scrollRef = useRef<FlatList<Message>>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
   const { items: knowledgeItems } = useKnowledgeStore();
 
@@ -112,6 +115,37 @@ export default function ChatScreen() {
     }
   };
 
+  const playTTS = async (text: string, lang: string, messageId: string) => {
+    try {
+      if (playingAudioId === messageId) {
+        await soundRef.current?.stopAsync();
+        await soundRef.current?.unloadAsync();
+        setPlayingAudioId(null);
+        return;
+      }
+
+      const base64Audio = await textToSpeech(text, lang);
+      if (!base64Audio) return;
+
+      const uri = `data:audio/wav;base64,${base64Audio}`;
+      const { sound } = await Audio.Sound.createAsync({ uri });
+      soundRef.current = sound;
+      setPlayingAudioId(messageId);
+
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.isLoaded && status.didJustFinish) {
+          setPlayingAudioId(null);
+          soundRef.current = null;
+        }
+      });
+
+      await sound.playAsync();
+    } catch (error) {
+      console.error('TTS playback failed:', error);
+      setPlayingAudioId(null);
+    }
+  };
+
   const renderMessage = ({ item }: { item: Message }) => {
     const isUser = item.user._id === '1';
     const detectedLang = item.metadata?.detectedLanguage;
@@ -162,6 +196,22 @@ export default function ChatScreen() {
         <Text style={{ fontSize: 15, color: isUser ? 'white' : '#333' }}>
           {item.text}
         </Text>
+
+        {!isUser && (
+          <TouchableOpacity
+            onPress={() => playTTS(item.text, item.metadata?.detectedLanguage || 'en-IN', item._id)}
+            className="mt-2 flex-row items-center"
+          >
+            {playingAudioId === item._id ? (
+              <VolumeX size={16} color="#007AFF" />
+            ) : (
+              <Volume2 size={16} color="#007AFF" />
+            )}
+            <Text className="text-xs text-blue-500 ml-1">
+              {playingAudioId === item._id ? 'Stop' : 'Listen'}
+            </Text>
+          </TouchableOpacity>
+        )}
 
         {item.metadata?.citations?.length > 0 && (
           <View className="mt-2 p-2 bg-black/5 rounded">
