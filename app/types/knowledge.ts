@@ -12,4 +12,5 @@ export interface KnowledgeItem {
   pdfUrl?: string;
   linkUrl?: string;
   isFavorite?: boolean;
+  detectedLanguage?: string;
 }

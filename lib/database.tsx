@@ -24,6 +24,7 @@ export const knowledgeItemsTable = sqliteTable('knowledge_items', {
   imageUrl: text('image_url'),
   pdfUrl: text('pdf_url'),
   linkUrl: text('link_url'),
+  detectedLanguage: text('detected_language'),
   isFavorite: integer('is_favorite', { mode: 'boolean' }).notNull().default(false),
   synced: integer('synced', { mode: 'boolean' }).notNull().default(false), // For offline sync tracking
   syncId: text('sync_id'), // Reference to Supabase ID when synced
@@ -52,6 +53,7 @@ sqlite.execSync(`
     image_url TEXT,
     pdf_url TEXT,
     link_url TEXT,
+    detected_language TEXT,
     is_favorite INTEGER DEFAULT 0,
     synced INTEGER DEFAULT 0,
     sync_id TEXT
@@ -93,6 +95,7 @@ export const knowledgeDb = {
         imageUrl: item.imageUrl,
         pdfUrl: item.pdfUrl,
         linkUrl: item.linkUrl,
+        detectedLanguage: item.detectedLanguage,
         isFavorite: !!item.isFavorite,
       }));
     } catch (error) {
@@ -122,6 +125,7 @@ export const knowledgeDb = {
         imageUrl: item.imageUrl,
         pdfUrl: item.pdfUrl,
         linkUrl: item.linkUrl,
+        detectedLanguage: item.detectedLanguage,
         isFavorite: !!item.isFavorite,
       };
     } catch (error) {
@@ -148,6 +152,7 @@ export const knowledgeDb = {
         imageUrl: item.imageUrl,
         pdfUrl: item.pdfUrl,
         linkUrl: item.linkUrl,
+        detectedLanguage: item.detectedLanguage,
         isFavorite: item.isFavorite ? 1 : 0,
         synced: 0, // Not synced yet
       }).execute();
@@ -172,6 +177,7 @@ export const knowledgeDb = {
           ...(updates.imageUrl !== undefined && { imageUrl: updates.imageUrl }),
           ...(updates.pdfUrl !== undefined && { pdfUrl: updates.pdfUrl }),
           ...(updates.linkUrl !== undefined && { linkUrl: updates.linkUrl }),
+          ...(updates.detectedLanguage !== undefined && { detectedLanguage: updates.detectedLanguage }),
           ...(updates.isFavorite !== undefined && { isFavorite: updates.isFavorite ? 1 : 0 }),
           updatedAt: Date.now(),
         })
