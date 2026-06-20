@@ -58,8 +58,17 @@ export default function WelcomeScreen() {
         style={{ flex: 1 }}
       >
         <View className="flex-1 items-center justify-center px-8">
+          {/* Hackathon Badge */}
+          <View className="absolute top-12 left-0 right-0 items-center">
+            <View className="bg-yellow-400/20 px-4 py-1 rounded-full border border-yellow-400/40">
+              <Text className="text-yellow-300 text-xs font-medium">
+                🏆 Built for HACKHAZARDS '26 · Expo + Sarvam AI Track
+              </Text>
+            </View>
+          </View>
+
           {/* Progress Dots */}
-          <View className="flex-row absolute top-12">
+          <View className="flex-row absolute top-24">
             {onboardingSteps.map((_, index) => (
               <MotiView
                 key={index}
