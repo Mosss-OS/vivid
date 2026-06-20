@@ -1,11 +1,12 @@
 import { View, Text, SafeAreaView, Platform, Switch, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
-import { User, Moon, Bell, Download, Shield, Info, ChevronRight } from 'lucide-react-native';
+import { User, Moon, Bell, Download, Shield, Info, ChevronRight, Database } from 'lucide-react-native';
 import { useTheme } from '../../lib/theme';
 import { useKnowledgeStore } from '../../lib/store';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
+import { getDemoItems } from '../../lib/demo-data';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -229,6 +230,29 @@ export default function SettingsScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity 
+            className="flex-row items-center justify-between py-3 border-b border-gray-200"
+            onPress={async () => {
+              const { setItems } = useKnowledgeStore.getState();
+              const demoItems = getDemoItems();
+              setItems(demoItems);
+              alert(`Loaded ${demoItems.length} demo items (English, हिंदी, தமிழ், తెలుగு)`);
+            }}
+          >
+            <View className="flex-row items-center">
+              <Database size={20} color={isDark ? '#60a5fa' : '#6b7280'} />
+              <View className="ml-3">
+                <Text className={isDark ? 'text-white' : 'text-gray-900'}>
+                  Load Demo Data
+                </Text>
+                <Text className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                  For demo/judging purposes
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={20} color={isDark ? '#9ca3af' : '#6b7280'} />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
             className="flex-row items-center justify-between py-3"
             onPress={handleClearData}
           >
@@ -241,6 +265,8 @@ export default function SettingsScreen() {
             <ChevronRight size={20} color="#ef4444" />
           </TouchableOpacity>
         </MotiView>
+
+
 
         {/* Notifications - Glassmorphism */}
         <MotiView
