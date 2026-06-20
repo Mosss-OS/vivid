@@ -19,6 +19,45 @@
 
 Vivid is a beautiful, fast, and intelligent AI-powered Second Brain mobile app. Users capture thoughts, notes, voice memos, images, PDFs, and links — the AI automatically organizes everything, finds connections, and lets users chat naturally with their entire personal knowledge base.
 
+## 🏆 HACKHAZARDS '26 — Expo + Sarvam AI Track
+
+Vivid is submitted to **HACKHAZARDS '26** for two tracks:
+1. **Expo Track** — Build Mobile Apps with Expo
+2. **Sarvam AI Track** — Build AI Applications with Sarvam AI
+
+### Why Vivid Wins
+
+**"The first multilingual Second Brain for India — capture thoughts in any Indian language, search and chat with your knowledge base in your mother tongue."**
+
+While existing second-brain apps (Notion, Obsidian, Mem.ai, Reflect) are English-only, Vivid breaks the language barrier:
+
+- 🎙️ **Voice capture in 10+ Indian languages** using Sarvam STT (Speech-to-Text)
+- 💬 **Chat in your mother tongue** — ask questions in Hindi, Tamil, Telugu, and get answers back in the same language
+- 🔊 **Listen to AI responses** in your language with Sarvam Text-to-Speech
+- 🌐 **Auto-detect and translate** between English and Indian languages seamlessly
+
+### Sarvam AI Integration
+
+Vivid leverages the [Sarvam AI](https://www.sarvam.ai) platform for all multilingual capabilities:
+
+| Feature | Sarvam API | Usage |
+|---------|-----------|-------|
+| Voice Transcription | `speech-to-text` | Transcribe voice memos in 22 Indian languages |
+| Language Detection | `language-detection` | Auto-detect chat message language |
+| Translation | `translate` | Translate queries to English for RAG, translate responses back |
+| Text-to-Speech | `text-to-speech` | Read AI responses aloud in Indian languages |
+
+### Setup
+
+To run Vivid with multilingual features, add your Sarvam API key:
+
+```bash
+# .env
+EXPO_PUBLIC_SARVAM_API_KEY=your_sarvam_api_key_here
+```
+
+Get your API key at: https://dashboard.sarvam.ai
+
 ## 📊 Development Phase: **Backend Integration & Local Database** (Phase 3 of 4)
 
 We have successfully implemented all core UI screens and basic functionality. We have now integrated backend services (Supabase) and state management (Zustand) with local database persistence (Expo SQLite + Drizzle ORM) for offline-first capabilities.
@@ -180,6 +219,7 @@ vivid/
      EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
      EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
      EXPO_PUBLIC_GROQ_API_KEY=your_groq_api_key
+     EXPO_PUBLIC_SARVAM_API_KEY=your_sarvam_api_key_here
      ```
 
 3. Start the development server:
