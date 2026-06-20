@@ -5,6 +5,7 @@ import { Mic, Stop, Check, X } from 'lucide-react-native';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { MotiView } from 'moti';
+import * as Haptics from 'expo-haptics';
 import { knowledgeDb } from '../../../lib/database';
 import { useKnowledgeStore } from '../../../lib/store';
 
@@ -59,6 +60,7 @@ export default function CaptureVoiceScreen() {
       await recording.startAsync();
       setRecordingObject(recording);
       setRecording(true);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     } catch (error) {
       console.error('Failed to start recording', error);
       alert('Failed to start recording. Please check microphone permissions.');
@@ -79,6 +81,7 @@ export default function CaptureVoiceScreen() {
       setAudioUri(fileUri);
       setRecordingObject(null);
       setRecording(false);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
       await transcribeAudio(fileUri);
     } catch (error) {

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Check, Clock, Bell } from 'lucide-react-native';
 import { MotiView } from 'moti';
 import { TouchableOpacity } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { AIService } from '../../lib/ai-service';
 import { useKnowledgeStore } from '../../lib/store';
 import { scheduleTaskReminder } from '../../lib/notifications';
@@ -73,6 +74,7 @@ export default function CaptureTextScreen() {
         alert(`Extracted ${extractedTasks.length} task(s) from your note!`);
       }
       
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setSaving(false);
       router.back();
     } catch (error) {
