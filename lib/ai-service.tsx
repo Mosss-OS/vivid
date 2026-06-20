@@ -1,5 +1,6 @@
 import { Groq } from 'groq';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { detectLanguage, translateText, isIndianLanguage } from './sarvam';
 
 // Initialize AI clients
 const groqApiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY || 'dummy_key_for_dev';
@@ -75,6 +76,8 @@ export type ChatResponse = {
     relevance: number;
   }>;
   suggestedFollowUps?: string[];
+  detectedLanguage?: string;
+  originalLanguage?: string;
 };
 
 // AI Service Class
@@ -161,40 +164,32 @@ export class AIService {
     return AIService.basicTagging(content);
   }
 
-  // Generate chat response with RAG
+  // Generate chat response with RAG and multilingual support
   static async generateChatResponse(
     message: string,
     knowledgeItems: Array<any>,
     conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = []
   ): Promise<ChatResponse> {
+    let originalLanguage = 'en-IN';
+    let detectedLang = 'en-IN';
+
     try {
-      // Try Groq first
+      detectedLang = await detectLanguage(message);
+      originalLanguage = detectedLang;
+    } catch (error) {
+      console.warn('Language detection failed, defaulting to English:', error);
+    }
+
+    const needsTranslation = isIndianLanguage(detectedLang) && detectedLang !== 'en-IN';
+    const queryForRag = needsTranslation
+      ? await translateText(message, detectedLang, 'en-IN')
+      : message;
+
+    try {
       if (groq) {
-        // Prepare context from knowledge items
         const context = knowledgeItems
           .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
           .join('\n');
-
-        // Build messages array with conversation history
-        const messages = [
-          {
-            role: "system",
-            content: `You are Vivid, an AI-powered Second Brain assistant. 
-                      Use the provided knowledge items to answer the user's question. 
-                      Always cite specific items when referencing information by mentioning the title.
-                      If you don't know something from the knowledge base, say so.
-                      Keep responses concise but informative.`
-          },
-          // Add conversation history for context
-          ...conversationHistory.map(msg => ({
-            role: msg.role === 'assistant' ? "assistant" : "user",
-            content: msg.content
-          })),
-          {
-            role: "user",
-            content: `Knowledge Base:\n${context}\n\nQuestion: ${message}`
-          }
-        ];
 
         const completion = await groq.chat.completions.create({
           messages: [
@@ -208,7 +203,7 @@ export class AIService {
             },
             {
               role: "user",
-              content: `Knowledge Base:\n${context}\n\nQuestion: ${message}`
+              content: `Knowledge Base:\n${context}\n\nQuestion: ${queryForRag}`
             }
           ],
           model: "mixtral-8x7b-32768",
@@ -216,16 +211,19 @@ export class AIService {
           max_tokens: 500
         });
 
-        const aiResponse = completion.choices[0].message.content;
-        
-        // Extract citations (simplified - in reality would be more sophisticated)
+        let aiResponse = completion.choices[0].message.content;
+
+        if (needsTranslation) {
+          aiResponse = await translateText(aiResponse, 'en-IN', detectedLang);
+        }
+
         const citations = knowledgeItems
-          .slice(0, 3) // Top 3 most relevant
+          .slice(0, 3)
           .map(item => ({
             id: item.id,
             title: item.title,
             type: item.type,
-            relevance: 0.9 - (knowledgeItems.indexOf(item) * 0.1) // Decreasing relevance
+            relevance: 0.9 - (knowledgeItems.indexOf(item) * 0.1)
           }));
 
         return {
@@ -235,7 +233,9 @@ export class AIService {
             "Can you elaborate on that?",
             "What else do I have on this topic?",
             "How does this connect to my other notes?"
-          ]
+          ],
+          detectedLanguage: detectedLang,
+          originalLanguage,
         };
       }
     } catch (groqError) {
@@ -243,41 +243,40 @@ export class AIService {
     }
 
     try {
-        // Fallback to Gemini for chat
-        if (gemini) {
-          const model = gemini.getGenerativeModel({ model: "gemini-pro" });
+      if (gemini) {
+        const model = gemini.getGenerativeModel({ model: "gemini-pro" });
+        const context = knowledgeItems
+          .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
+          .join('\n');
+
+        const historyText = conversationHistory
+          .map(msg => `${msg.role === 'user' ? 'User' : 'Vivid'}: ${msg.content}`)
+          .join('\n');
+
+        const prompt = `
+          You are Vivid, an AI-powered Second Brain assistant. 
+          Use the provided knowledge items to answer the user's question. 
+          Always cite specific items when referencing information.
+          If you don't know something from the knowledge base, say so.
+          Keep responses concise but informative.
           
-          // Prepare context
-          const context = knowledgeItems
-            .map(item => `- ${item.title}: ${item.content.substring(0, 200)}...`)
-            .join('\n');
+          Previous Conversation:
+          ${historyText}
           
-          // Build conversation history for Gemini
-          const historyText = conversationHistory
-            .map(msg => `${msg.role === 'user' ? 'User' : 'Vivid'}: ${msg.content}`)
-            .join('\n');
+          Knowledge Base:
+          ${context}
           
-          const prompt = `
-            You are Vivid, an AI-powered Second Brain assistant. 
-            Use the provided knowledge items to answer the user's question. 
-            Always cite specific items when referencing information.
-            If you don't know something from the knowledge base, say so.
-            Keep responses concise but informative.
-            
-            Previous Conversation:
-            ${historyText}
-            
-            Knowledge Base:
-            ${context}
-            
-            Question: ${message}
-          `;
-        
+          Question: ${queryForRag}
+        `;
+
         const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const aiResponse = response.text();
-        
-        // Extract citations (simplified)
+        const aiResult = await result.response;
+        let aiResponse = aiResult.text();
+
+        if (needsTranslation) {
+          aiResponse = await translateText(aiResponse, 'en-IN', detectedLang);
+        }
+
         const citations = knowledgeItems
           .slice(0, 3)
           .map(item => ({
@@ -294,14 +293,15 @@ export class AIService {
             "Tell me more about this",
             "What are related topics?",
             "Any action items from this?"
-          ]
+          ],
+          detectedLanguage: detectedLang,
+          originalLanguage,
         };
       }
     } catch (geminiError) {
       console.error('Gemini API also failed for chat:', geminiError);
     }
 
-    // Final fallback - basic response based on knowledge items
     return AIService.basicChatResponse(message, knowledgeItems);
   }
 
