@@ -5,28 +5,56 @@ import { Network, ArrowLeft, ZoomIn, ZoomOut } from 'lucide-react-native';
 import { useKnowledgeStore } from '../../lib/store';
 import { useTheme } from '../../lib/theme';
 import { useEffect, useState, useRef } from 'react';
-import { MaskedView } from '@react-native-community/masked-view';
+import { knowledgeDb } from '../../lib/database';
 
-// Simplified graph implementation (since react-native-graph needs native setup)
-// This is a conceptual implementation - in production you'd use react-native-graph
+type FilterType = 'All' | 'Ideas' | 'Tasks' | 'People' | 'References';
+const FILTERS: FilterType[] = ['All', 'Ideas', 'Tasks', 'People', 'References'];
+
+const TYPE_MAP: Record<string, string> = {
+  idea: 'Ideas',
+  task: 'Tasks',
+  person: 'People',
+  reference: 'References',
+  note: 'All',
+  insight: 'All',
+  project: 'All',
+};
+
 export default function GraphScreen() {
   const router = useRouter();
   const { items } = useKnowledgeStore();
   const { isDark } = useTheme();
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('All');
+  const [connections, setConnections] = useState<any[]>([]);
   const graphRef = useRef(null);
 
-  // Generate graph data
-  const graphData = generateGraphData(items);
+  useEffect(() => {
+    loadConnections();
+  }, [items]);
 
-  // Handle node press
+  const loadConnections = async () => {
+    const conns = await knowledgeDb.getConnections();
+    setConnections(conns);
+    if (conns.length === 0 && items.length > 1) {
+      await knowledgeDb.buildTagConnections();
+      const rebuilt = await knowledgeDb.getConnections();
+      setConnections(rebuilt);
+    }
+  };
+
+  const filteredItems = activeFilter === 'All'
+    ? items
+    : items.filter(item => TYPE_MAP[item.type] === activeFilter);
+
+  const graphData = generateGraphData(filteredItems, connections);
+
   const handleNodePress = (nodeId: string) => {
     setSelectedNode(nodeId === selectedNode ? null : nodeId);
   };
 
-  // Get selected node details
-  const selectedItem = selectedNode 
+  const selectedItem = selectedNode
     ? items.find(item => item.id === selectedNode)
     : null;
 
@@ -37,7 +65,7 @@ export default function GraphScreen() {
         <MotiView
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          className="flex-row items-center justify-between mb-6"
+          className="flex-row items-center justify-between mb-4"
         >
           <TouchableOpacity onPress={() => router.back()}>
             <ArrowLeft size={24} color={isDark ? '#fff' : '#000'} />
@@ -48,7 +76,27 @@ export default function GraphScreen() {
           <View style={{ width: 24 }} />
         </MotiView>
 
-        {/* Graph Visualization (Simplified) */}
+        {/* Filter Pills */}
+        <View className="flex-row mb-4">
+          {FILTERS.map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              onPress={() => {
+                setActiveFilter(filter);
+                setSelectedNode(null);
+              }}
+              className={`px-4 py-2 rounded-full mr-2 ${
+                activeFilter === filter ? 'bg-blue-500' : 'bg-gray-200'
+              }`}
+            >
+              <Text className={`text-sm ${activeFilter === filter ? 'text-white' : 'text-gray-700'}`}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Graph Visualization */}
         <MotiView
           from={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -57,11 +105,11 @@ export default function GraphScreen() {
           style={{
             overflow: 'hidden',
             ...(Platform.OS === 'android' && { elevation: 2 }),
-            ...(Platform.OS === 'ios' && { 
-              shadowColor: '#000', 
-              shadowOffset: { width: 0, height: 1 }, 
-              shadowOpacity: 0.1, 
-              shadowRadius: 2 
+            ...(Platform.OS === 'ios' && {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.1,
+              shadowRadius: 2,
             }),
           }}
         >
@@ -81,22 +129,20 @@ export default function GraphScreen() {
             </TouchableOpacity>
           </View>
 
-          {/* Simplified Graph Visualization */}
+          {/* Graph Canvas */}
           <View className="flex-1 items-center justify-center">
-            <View 
-              className="relative" 
-              style={{ 
+            <View
+              style={{
                 transform: [{ scale: zoomLevel }],
                 width: 300,
                 height: 400,
               }}
             >
-              {/* Render Nodes */}
               {graphData.nodes.map((node, index) => {
-                const angle = (index / graphData.nodes.length) * 2 * Math.PI;
+                const angle = (index / Math.max(graphData.nodes.length, 1)) * 2 * Math.PI;
                 const x = 150 + Math.cos(angle) * 100;
                 const y = 200 + Math.sin(angle) * 100;
-                
+
                 return (
                   <TouchableOpacity
                     key={node.id}
@@ -108,8 +154,8 @@ export default function GraphScreen() {
                       width: 50,
                       height: 50,
                       borderRadius: 25,
-                      backgroundColor: selectedNode === node.id 
-                        ? '#3b82f6' 
+                      backgroundColor: selectedNode === node.id
+                        ? '#3b82f6'
                         : getNodeColor(node.type, isDark),
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -125,21 +171,19 @@ export default function GraphScreen() {
                 );
               })}
 
-              {/* Render Edges (simplified - just lines) */}
               {graphData.edges.map((edge, index) => {
                 const sourceNode = graphData.nodes.find(n => n.id === edge.source);
                 const targetNode = graphData.nodes.find(n => n.id === edge.target);
-                
                 if (!sourceNode || !targetNode) return null;
-                
-                const sourceAngle = (graphData.nodes.indexOf(sourceNode) / graphData.nodes.length) * 2 * Math.PI;
-                const targetAngle = (graphData.nodes.indexOf(targetNode) / graphData.nodes.length) * 2 * Math.PI;
-                
+
+                const sourceAngle = (graphData.nodes.indexOf(sourceNode) / Math.max(graphData.nodes.length, 1)) * 2 * Math.PI;
+                const targetAngle = (graphData.nodes.indexOf(targetNode) / Math.max(graphData.nodes.length, 1)) * 2 * Math.PI;
+
                 const x1 = 150 + Math.cos(sourceAngle) * 100;
                 const y1 = 200 + Math.sin(sourceAngle) * 100;
                 const x2 = 150 + Math.cos(targetAngle) * 100;
                 const y2 = 200 + Math.sin(targetAngle) * 100;
-                
+
                 return (
                   <View
                     key={index}
@@ -147,13 +191,12 @@ export default function GraphScreen() {
                       position: 'absolute',
                       left: Math.min(x1, x2),
                       top: Math.min(y1, y2),
-                      width: Math.abs(x2 - x1),
-                      height: 1,
-                      backgroundColor: isDark ? '#4b5563' : '#d1d5db',
+                      width: Math.abs(x2 - x1) || 1,
+                      height: 2,
+                      backgroundColor: edge.strength > 0.7 ? '#3b82f6' : isDark ? '#4b5563' : '#d1d5db',
+                      opacity: Math.max(edge.strength, 0.2),
                       transform: [
                         { rotate: `${Math.atan2(y2 - y1, x2 - x1)}rad` },
-                        { translateX: x1 },
-                        { translateY: y1 },
                       ],
                     }}
                   />
@@ -162,7 +205,7 @@ export default function GraphScreen() {
             </View>
           </View>
 
-          {/* Node Count */}
+          {/* Stats */}
           <View className="absolute bottom-4 left-4">
             <Text className={isDark ? 'text-gray-400' : 'text-gray-600'}>
               {graphData.nodes.length} items • {graphData.edges.length} connections
@@ -178,16 +221,16 @@ export default function GraphScreen() {
             className={`mt-4 p-4 rounded-2xl ${isDark ? 'bg-gray-800' : 'bg-white'}`}
             style={{
               ...(Platform.OS === 'android' && { elevation: 2 }),
-              ...(Platform.OS === 'ios' && { 
-                shadowColor: '#000', 
-                shadowOffset: { width: 0, height: 1 }, 
-                shadowOpacity: 0.1, 
-                shadowRadius: 2 
+              ...(Platform.OS === 'ios' && {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.1,
+                shadowRadius: 2,
               }),
             }}
           >
             <View className="flex-row items-center mb-2">
-              <View 
+              <View
                 className="w-8 h-8 rounded-full items-center justify-center mr-3"
                 style={{ backgroundColor: getNodeColor(selectedItem.type, isDark) }}
               >
@@ -204,7 +247,7 @@ export default function GraphScreen() {
             </Text>
             <View className="flex-row flex-wrap">
               {selectedItem.tags.map((tag, index) => (
-                <Text 
+                <Text
                   key={index}
                   className={`text-xs mr-2 mb-1 px-2 py-1 rounded ${isDark ? 'bg-gray-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}
                 >
@@ -232,55 +275,34 @@ export default function GraphScreen() {
   );
 }
 
-// Helper functions
-function generateGraphData(items: any[]) {
+function generateGraphData(items: any[], connections: any[]) {
   const nodes = items.map(item => ({
     id: item.id,
     type: item.type,
     title: item.title,
   }));
 
-  // Generate edges based on shared tags or similar content
-  const edges: Array<{ source: string; target: string }> = [];
-  for (let i = 0; i < items.length; i++) {
-    for (let j = i + 1; j < items.length; j++) {
-      const item1 = items[i];
-      const item2 = items[j];
-      
-      // Check for shared tags
-      const sharedTags = item1.tags.filter((tag: string) =>
-        item2.tags.includes(tag)
-      );
-      
-      // Or check for content similarity (simplified)
-      const hasSimilarContent = item1.content
-        .toLowerCase()
-        .split(' ')
-        .some((word: string) => 
-          word.length > 3 && item2.content.toLowerCase().includes(word)
-        );
-      
-      if (sharedTags.length > 0 || hasSimilarContent) {
-        edges.push({
-          source: item1.id,
-          target: item2.id,
-        });
-      }
-    }
-  }
+  const nodeIds = new Set(nodes.map(n => n.id));
+  const edges = connections
+    .filter(conn => nodeIds.has(conn.sourceId) && nodeIds.has(conn.targetId))
+    .map(conn => ({
+      source: conn.sourceId,
+      target: conn.targetId,
+      strength: conn.strength,
+    }));
 
   return { nodes, edges };
 }
 
 function getNodeColor(type: string, isDark: boolean) {
   const colors: Record<string, string> = {
-    idea: isDark ? '#3730a3' : '#c7d2fe', // Purple
-    task: isDark ? '#065f46' : '#a7f3d2',   // Green
-    insight: isDark ? '#1e40af' : '#bfdbfe',  // Blue
-    project: isDark ? '#92400e' : '#fde68a', // Orange
-    person: isDark ? '#713f12' : '#fef3c7',  // Yellow
-    reference: isDark ? '#4b5563' : '#e5e7eb', // Gray
-    note: isDark ? '#1e40af' : '#bfdbfe',   // Blue
+    idea: isDark ? '#3730a3' : '#c7d2fe',
+    task: isDark ? '#065f46' : '#a7f3d2',
+    insight: isDark ? '#1e40af' : '#bfdbfe',
+    project: isDark ? '#92400e' : '#fde68a',
+    person: isDark ? '#713f12' : '#fef3c7',
+    reference: isDark ? '#4b5563' : '#e5e7eb',
+    note: isDark ? '#1e40af' : '#bfdbfe',
   };
   return colors[type] || colors.note;
 }
