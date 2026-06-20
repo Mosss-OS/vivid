@@ -10,6 +10,20 @@ import {
 } from 'drizzle-orm/sqlite-core';
 import type { KnowledgeItem } from '../types/knowledge';
 
+// Knowledge connections table for graph relationships
+export type ConnectionType = 'shared_tag' | 'semantic_similarity' | 'manual';
+
+export const knowledgeConnectionsTable = sqliteTable('knowledge_connections', {
+  id: text('id').primaryKey(),
+  sourceId: text('source_id').notNull(),
+  targetId: text('target_id').notNull(),
+  connectionType: text('connection_type', { enum: ['shared_tag', 'semantic_similarity', 'manual'] }).notNull(),
+  strength: real('strength').notNull().default(0.5),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+});
+
+export type KnowledgeConnection = typeof knowledgeConnectionsTable.$inferSelect;
+
 // Database schema definition
 export const knowledgeItemsTable = sqliteTable('knowledge_items', {
   id: text('id').primaryKey(),
@@ -57,6 +71,14 @@ sqlite.execSync(`
     is_favorite INTEGER DEFAULT 0,
     synced INTEGER DEFAULT 0,
     sync_id TEXT
+  );
+  CREATE TABLE IF NOT EXISTS knowledge_connections (
+    id TEXT PRIMARY KEY,
+    source_id TEXT NOT NULL,
+    target_id TEXT NOT NULL,
+    connection_type TEXT NOT NULL,
+    strength REAL DEFAULT 0.5,
+    created_at INTEGER NOT NULL
   );
 `);
 
@@ -233,6 +255,71 @@ export const knowledgeDb = {
     }
   },
   
+  // Get all connections for graph
+  async getConnections(): Promise<KnowledgeConnection[]> {
+    try {
+      return await db.select().from(knowledgeConnectionsTable).execute();
+    } catch (error) {
+      console.error('Failed to get connections:', error);
+      return [];
+    }
+  },
+
+  // Add a connection between two knowledge items
+  async addConnection(
+    sourceId: string,
+    targetId: string,
+    connectionType: ConnectionType = 'shared_tag',
+    strength: number = 0.5
+  ): Promise<string> {
+    try {
+      const id = `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      await db.insert(knowledgeConnectionsTable).values({
+        id,
+        sourceId,
+        targetId,
+        connectionType,
+        strength,
+        createdAt: new Date(),
+      }).execute();
+      return id;
+    } catch (error) {
+      console.error('Failed to add connection:', error);
+      return '';
+    }
+  },
+
+  // Build connections based on shared tags between all knowledge items
+  async buildTagConnections(): Promise<void> {
+    try {
+      const items = await db.select().from(knowledgeItemsTable).execute();
+      for (let i = 0; i < items.length; i++) {
+        for (let j = i + 1; j < items.length; j++) {
+          const tags1 = JSON.parse(items[i].tags || '[]') as string[];
+          const tags2 = JSON.parse(items[j].tags || '[]') as string[];
+          const shared = tags1.filter(t => tags2.includes(t));
+          if (shared.length > 0) {
+            const strength = Math.min(shared.length / Math.max(tags1.length, tags2.length), 1);
+            await this.addConnection(items[i].id, items[j].id, 'shared_tag', strength);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to build tag connections:', error);
+    }
+  },
+
+  // Clear all connections
+  async clearConnections(): Promise<boolean> {
+    try {
+      await db.delete(knowledgeConnectionsTable).execute();
+      return true;
+    } catch (error) {
+      console.error('Failed to clear connections:', error);
+      return false;
+    }
+  },
+
   // Clear all data (for testing/logout)
   async clear(): Promise<boolean> {
     try {
