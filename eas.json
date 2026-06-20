@@ -23,7 +23,5 @@
   "submit": {
     "production": {}
   },
-  "scripts": {
-    "eas-build-post-install": "npm install"
-  }
+
 }
