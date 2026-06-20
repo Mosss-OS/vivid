@@ -149,6 +149,7 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
         imageUrl: itemData.imageUrl,
         pdfUrl: itemData.pdfUrl,
         linkUrl: itemData.linkUrl,
+        detectedLanguage: itemData.detectedLanguage,
         isFavorite: itemData.isFavorite,
       };
       
