@@ -1,18 +1,25 @@
 import { Groq } from 'groq';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { detectLanguage, translateText, isIndianLanguage } from './sarvam';
+import { getApiKey } from './secureConfig';
 
-// Initialize AI clients
-const groqApiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY || 'dummy_key_for_dev';
-const geminiApiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || 'dummy_key_for_dev';
+let groqApiKey = process.env.EXPO_PUBLIC_GROQ_API_KEY || 'dummy_key_for_dev';
+let geminiApiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || 'dummy_key_for_dev';
 
-// Initialize Groq client (primary)
-const groq = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
+// Initialize clients lazily
+let groq: Groq | null = null;
+let gemini: GoogleGenerativeAI | null = null;
 
-// Initialize Gemini client (fallback)
-const gemini = geminiApiKey 
-  ? new GoogleGenerativeAI({ apiKey: geminiApiKey })
-  : null;
+async function initClients() {
+  const storedGroqKey = await getApiKey('GROQ_API_KEY');
+  const storedGeminiKey = await getApiKey('GEMINI_API_KEY');
+  groqApiKey = storedGroqKey || groqApiKey;
+  geminiApiKey = storedGeminiKey || geminiApiKey;
+  groq = groqApiKey ? new Groq({ apiKey: groqApiKey }) : null;
+  gemini = geminiApiKey ? new GoogleGenerativeAI({ apiKey: geminiApiKey }) : null;
+}
+
+initClients();
 
 // Rate limiting
 const requestLog: Array<{ timestamp: number; tokens: number }> = [];
