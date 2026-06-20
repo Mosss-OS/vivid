@@ -106,16 +106,16 @@ export const scheduleDailyInsight = async (insightText?: string) => {
     }
   }
 
-  // Schedule for 9 AM daily
+  // Schedule for 8 AM daily
   await scheduleNotification(
     'Vivid Daily Insight',
     notificationBody,
     {
-      hour: 9,
+      hour: 8,
       minute: 0,
       repeats: true,
     },
-    { type: 'daily_insight' }
+    { type: 'daily_insight', screen: 'chat', prompt: 'What should I focus on today based on my notes?' }
   );
 };
 
