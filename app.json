@@ -52,7 +52,15 @@
     "plugins": [
       "expo-font",
       "expo-secure-store",
-      "expo-router"
-    ]
+      "expo-router",
+      "expo-dev-client"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "1b26719c-9081-452f-b906-667e5f91a92b"
+      }
+    },
+    "owner": "techboy1999"
   }
 }
