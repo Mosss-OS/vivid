@@ -1,4 +1,4 @@
-import { Groq } from 'groq';
+import { Groq } from 'groq-sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { detectLanguage, translateText, isIndianLanguage } from './sarvam';
 import { getApiKey } from './secureConfig';
