@@ -1,7 +1,7 @@
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Search } from 'lucide-react-native';
 import { useState } from 'react';
-import { AIService } from '../lib/ai-service';
+import { AIService } from '../../lib/ai-service';
 
 type Props = {
   onSearch: (query: string) => void;
