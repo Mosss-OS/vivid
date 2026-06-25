@@ -1,9 +1,12 @@
-import { PrivyProvider, usePrivy, useAuth } from '@privy-io/expo';
-import { Stack } from 'expo-router';
+import "../global.css";
+import { PrivyProvider, usePrivy } from '@privy-io/expo';
+import { Stack, useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useEffect, useState, Component, ReactNode } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import * as SecureStore from 'expo-secure-store';
 import { StatusBar } from 'expo-status-bar';
-import { ThemeProvider, useTheme } from '../lib/theme';
+import { ThemeProvider } from '../lib/theme';
 import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@fontsource/inter';
 
 // Error Boundary Component
@@ -48,23 +51,15 @@ class ErrorBoundary extends Component<
   }
 }
 
-// Prevent auto-hiding of splash screen until we explicitly call hide
-useEffect(() => {
-  (async () => {
-    await SplashScreen.hideAsync();
-  })();
-}, []);
-
 function RootLayoutNav() {
   const { user, isReady } = usePrivy();
   const router = useRouter();
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
 
   useEffect(() => {
-    // Check if user has seen onboarding
     const checkOnboarding = async () => {
       try {
-        const value = await localStorage.getItem('vivid_onboarding_complete');
+        const value = await SecureStore.getItemAsync('vivid_onboarding_complete');
         setHasSeenOnboarding(!!value);
       } catch {
         setHasSeenOnboarding(false);

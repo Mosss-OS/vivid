@@ -1,4 +1,4 @@
-import { SQLite } from 'expo-sqlite';
+import { openDatabaseSync } from 'expo-sqlite';
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { 
   integer, 
@@ -8,7 +8,7 @@ import {
   real,
   blob
 } from 'drizzle-orm/sqlite-core';
-import type { KnowledgeItem } from '../types/knowledge';
+import type { KnowledgeItem } from '../app/types/knowledge';
 
 // Knowledge connections table for graph relationships
 export type ConnectionType = 'shared_tag' | 'semantic_similarity' | 'manual';
@@ -49,7 +49,7 @@ export type KnowledgeItemDB = typeof knowledgeItemsTable.$inferSelect;
 export type NewKnowledgeItem = typeof knowledgeItemsTable.$inferInsert;
 
 // Initialize database
-const sqlite = SQLite.openDatabase('vivid.db');
+const sqlite = openDatabaseSync('vivid.db');
 export const db = drizzle(sqlite);
 
 // Create table if not exists (raw SQL for initial setup)

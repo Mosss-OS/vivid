@@ -47,9 +47,6 @@
       "favicon": "./assets/favicon.png"
     },
     "scheme": "vivid",
-    "deepLinking": {
-      "enabled": true
-    },
     "plugins": [
       "expo-font",
       "expo-secure-store",
@@ -62,7 +59,8 @@
             "kotlinVersion": "2.0.21"
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "extra": {
       "router": {},

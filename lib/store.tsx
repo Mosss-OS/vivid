@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from './supabase';
 import { knowledgeDb } from './database';
-import type { KnowledgeItem } from '../types/knowledge';
+import type { KnowledgeItem } from '../app/types/knowledge';
 
 // Define the store interface
 interface KnowledgeState {

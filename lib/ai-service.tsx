@@ -380,13 +380,38 @@ export class AIService {
     );
     
     if (relevantItems.length === 0) {
+      return {
+        response: "I couldn't find any relevant items in your knowledge base.",
+        citations: [],
+        suggestedFollowUps: [
+          "What do I have in my knowledge base?",
+          "Help me capture a new note",
+          "Show me my recent items"
+        ]
+      };
+    }
+
+    const response = `I found ${relevantItems.length} relevant item${relevantItems.length > 1 ? 's' : ''} in your knowledge base:\n\n` +
+      relevantItems.slice(0, 3).map((item, index) =>
+        `${index + 1}. ${item.title} (${item.type}) - ${item.content.substring(0, 100)}...`
+      ).join('\n\n');
+
+    const citations = relevantItems
+      .slice(0, 3)
+      .map(item => ({
+        id: item.id,
+        title: item.title,
+        type: item.type,
+        relevance: 0.9 - (relevantItems.indexOf(item) * 0.1)
+      }));
+
     return {
-      response: response,
-      citations: [],
+      response,
+      citations: citations,
       suggestedFollowUps: [
-        "What do I have in my knowledge base?",
-        "Help me capture a new note",
-        "Show me my recent items"
+        "Can you tell me more about the first item?",
+        "How are these related?",
+        "Any action items from this?"
       ]
     };
   }
@@ -419,49 +444,20 @@ export class AIService {
       console.error('Task extraction failed:', error);
     }
 
-    // Fallback: simple keyword-based extraction
     return AIService.basicTaskExtraction(content);
   }
 
-  // Basic task extraction fallback
   private static basicTaskExtraction(content: string): Array<{ title: string; description: string }> {
     const tasks: Array<{ title: string; description: string }> = [];
     const lowerContent = content.toLowerCase();
-    
+
     if (lowerContent.includes('todo') || lowerContent.includes('task') || lowerContent.includes('need to')) {
       tasks.push({
         title: 'Extracted Task',
         description: content.substring(0, 100)
       });
     }
-    
+
     return tasks;
-  }
-}
-    
-    // Generate simple response
-    const response = `I found ${relevantItems.length} relevant item${relevantItems.length > 1 ? 's' : ''} in your knowledge base:\n\n` +
-      relevantItems.slice(0, 3).map((item, index) => 
-        `${index + 1}. ${item.title} (${item.type}) - ${item.content.substring(0, 100)}...`
-      ).join('\n\n');
-    
-    const citations = relevantItems
-      .slice(0, 3)
-      .map(item => ({
-        id: item.id,
-        title: item.title,
-        type: item.type,
-        relevance: 0.9 - (relevantItems.indexOf(item) * 0.1)
-      }));
-    
-    return {
-      response,
-      citations: citations,
-      suggestedFollowUps: [
-        "Can you tell me more about the first item?",
-        "How are these related?",
-        "Any action items from this?"
-      ]
-    };
   }
 }
