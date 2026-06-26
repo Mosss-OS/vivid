@@ -74,7 +74,7 @@ export default function WelcomeScreen() {
                 key={index}
                 className="w-2 h-2 rounded-full mx-1"
                 style={{
-                  backgroundColor: index === currentStep ? 'white' : 'white50',
+                  backgroundColor: index === currentStep ? 'white' : 'rgba(255,255,255,0.5)',
                 }}
                 animate={{ scale: index === currentStep ? 1.2 : 1 }}
               />
