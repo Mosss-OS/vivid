@@ -61,7 +61,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-web-browser"
+      "expo-web-browser",
+      "react-native-quick-crypto"
     ],
     "extra": {
       "router": {},

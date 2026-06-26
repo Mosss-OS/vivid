@@ -91,5 +91,6 @@ export function getDemoItems(): KnowledgeItem[] {
 
 export function isDemoMode(): boolean {
   if (typeof window === 'undefined') return false;
+  if (!window.location) return false;
   return new URLSearchParams(window.location.search).get('demo') === 'true';
 }

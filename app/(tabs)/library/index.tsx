@@ -1,8 +1,9 @@
-import { View, Text, FlatList, SafeAreaView, Platform } from 'react-native';
+import { View, Text, FlatList, SafeAreaView, Platform, TouchableOpacity, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Folder, Text as TextIcon, List, Star, TrendingUp, Users } from 'lucide-react-native';
 import type { KnowledgeItem } from '../../types/knowledge';
+import { useKnowledgeStore } from '../../../lib/store';
 
 export default function LibraryScreen() {
   const router = useRouter();
@@ -13,13 +14,14 @@ export default function LibraryScreen() {
     { id: '2', name: 'Personal', itemIds: [] },
     { id: '3', name: 'References', itemIds: [] }
   ]);
+  const [localItems, setLocalItems] = useState<KnowledgeItem[]>(knowledgeItems);
   const [newFolderName, setNewFolderName] = useState('');
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
 
   // Mock data for demo - in real app, this would come from local DB
   useEffect(() => {
     const loadKnowledgeItems = async () => {
-      setKnowledgeItems([
+      setLocalItems([
         {
           id: '1',
           title: 'React Native Performance Tips',
@@ -81,7 +83,7 @@ export default function LibraryScreen() {
     loadKnowledgeItems();
   }, []);
 
-  const filteredItems = knowledgeItems.filter(
+  const filteredItems = localItems.filter(
     (item) => {
       if (activeTab === 'folders' && selectedFolder) {
         const folder = folders.find(f => f.id === selectedFolder);
@@ -204,8 +206,8 @@ export default function LibraryScreen() {
 
         {/* Stats */}
         <View className="flex-row space-x-6 mb-6 text-sm text-muted-foreground">
-          <Text>📊 {knowledgeItems.length} Total Items</Text>
-          <Text>⭐ {knowledgeItems.filter(item => item.isFavorite).length} Favorites</Text>
+          <Text>📊 {localItems.length} Total Items</Text>
+          <Text>⭐ {localItems.filter(item => item.isFavorite).length} Favorites</Text>
         </View>
 
         {/* List */}

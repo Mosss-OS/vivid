@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Platform, TextInput } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';

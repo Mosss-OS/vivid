@@ -1,6 +1,6 @@
-import { View, Text, SafeAreaView, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { usePrivy, useLogin, useLogout, User } from '@privy-io/expo';
+import { usePrivy, useLogin } from '@privy-io/expo';
 import { MotiView } from 'moti';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,9 +10,8 @@ import * as SecureStore from 'expo-secure-store';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { user, isReady } = usePrivy();
+  const { user, isReady, logout } = usePrivy();
   const { login } = useLogin();
-  const { logout } = useLogout();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

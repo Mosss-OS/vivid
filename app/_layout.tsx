@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider } from '../lib/theme';
-import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@fontsource/inter';
+
 
 // Error Boundary Component
 class ErrorBoundary extends Component<

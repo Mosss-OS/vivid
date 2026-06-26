@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView, Image, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, SafeAreaView, Image, Platform, TextInput } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
