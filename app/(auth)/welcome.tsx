@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { MotiView, MotiText } from 'moti';
+import { MotiView } from 'moti';
+import { MotiText } from 'moti/build/components';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChevronRight, Brain, Sparkles, Zap } from 'lucide-react-native';
 import { useState } from 'react';
@@ -57,26 +58,27 @@ export default function WelcomeScreen() {
         colors={[step.color, '#1a1a2e']}
         style={{ flex: 1 }}
       >
-        <View className="flex-1 items-center justify-center px-8">
+        <View className="absolute inset-0 bg-black/30" />
+        <View className="flex-1 items-center justify-center px-6">
           {/* Hackathon Badge */}
-          <View className="absolute top-12 left-0 right-0 items-center">
-            <View className="bg-yellow-400/20 px-4 py-1 rounded-full border border-yellow-400/40">
-              <Text className="text-yellow-300 text-xs font-medium">
+          <View className="absolute top-12 left-0 right-0 items-center z-10">
+            <View className="bg-yellow-400/30 px-5 py-2 rounded-full border-2 border-yellow-400/60 shadow-lg">
+              <Text className="text-yellow-200 text-xs font-bold tracking-wide">
                 🏆 Built for HACKHAZARDS '26 · Expo + Sarvam AI Track
               </Text>
             </View>
           </View>
 
           {/* Progress Dots */}
-          <View className="flex-row absolute top-24">
+          <View className="flex-row absolute top-24 z-10">
             {onboardingSteps.map((_, index) => (
               <MotiView
                 key={index}
-                className="w-2 h-2 rounded-full mx-1"
+                className="w-3 h-3 rounded-full mx-1.5 border border-white/30"
                 style={{
-                  backgroundColor: index === currentStep ? 'white' : 'rgba(255,255,255,0.5)',
+                  backgroundColor: index === currentStep ? 'white' : 'rgba(255,255,255,0.3)',
                 }}
-                animate={{ scale: index === currentStep ? 1.2 : 1 }}
+                animate={{ scale: index === currentStep ? 1.3 : 1 }}
               />
             ))}
           </View>
@@ -89,7 +91,7 @@ export default function WelcomeScreen() {
               scale: isAnimating ? 0.5 : 1 
             }}
             transition={{ type: 'spring', duration: 500 }}
-            className="w-32 h-32 rounded-full bg-white/20 items-center justify-center mb-8"
+            className="w-32 h-32 rounded-full bg-white/20 items-center justify-center mb-6 border-2 border-white/20 shadow-lg"
           >
             <step.icon size={64} color="white" />
           </MotiView>
@@ -102,7 +104,7 @@ export default function WelcomeScreen() {
               translateY: isAnimating ? 20 : 0 
             }}
             transition={{ delay: 100 }}
-            className="text-4xl font-bold text-white mb-4 text-center"
+            className="text-4xl font-bold text-white mb-3 text-center drop-shadow-lg"
           >
             {step.title}
           </MotiText>
@@ -115,7 +117,7 @@ export default function WelcomeScreen() {
               translateY: isAnimating ? 20 : 0 
             }}
             transition={{ delay: 200 }}
-            className="text-lg text-white/80 text-center mb-12 leading-relaxed"
+            className="text-lg text-white/90 text-center mb-8 leading-relaxed px-4"
           >
             {step.description}
           </MotiText>
@@ -156,18 +158,25 @@ export default function WelcomeScreen() {
         </View>
 
         {/* Bottom Actions */}
-        <View className="px-8 pb-8">
+        <View className="px-6 pb-10">
           <MotiView
             whileTap={{ scale: 0.95 }}
           >
             <TouchableOpacity
               onPress={handleNext}
-              className="w-full bg-white py-4 rounded-xl flex-row items-center justify-center"
+              className="w-full bg-white py-4 rounded-xl flex-row items-center justify-center shadow-xl border-2 border-white/30"
+              style={{
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 8,
+              }}
             >
-              <Text className="text-lg font-semibold" style={{ color: step.color }}>
+              <Text className="text-lg font-bold" style={{ color: step.color }}>
                 {currentStep < onboardingSteps.length - 1 ? 'Continue' : 'Get Started'}
               </Text>
-              <ChevronRight size={20} color={step.color} style={{ marginLeft: 8 }} />
+              <ChevronRight size={22} color={step.color} style={{ marginLeft: 8 }} />
             </TouchableOpacity>
           </MotiView>
 
@@ -180,18 +189,21 @@ export default function WelcomeScreen() {
                   setIsAnimating(false);
                 }, 300);
               }}
-              className="mt-4 items-center"
+              className="mt-5 items-center"
             >
-              <Text className="text-white/60">Back</Text>
+              <Text className="text-white/80 font-medium text-base">Back</Text>
             </TouchableOpacity>
           )}
 
           {/* Skip to Login */}
           <TouchableOpacity
             onPress={() => router.push('/(auth)/login')}
-            className="mt-6 items-center"
+            className="mt-8 items-center"
           >
-            <Text className="text-white/40 text-sm">Already have an account? Sign In</Text>
+            <Text className="text-white/70 text-sm font-medium">
+              Already have an account?{' '}
+              <Text className="text-white font-bold underline">Sign In</Text>
+            </Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -201,9 +213,11 @@ export default function WelcomeScreen() {
 
 function FeatureItem({ icon, text }: { icon: string; text: string }) {
   return (
-    <View className="flex-row items-center bg-white/10 rounded-lg p-3">
-      <Text className="text-2xl mr-3">{icon}</Text>
-      <Text className="text-white text-base">{text}</Text>
+    <View className="flex-row items-center bg-black/30 rounded-xl p-4 border border-white/20 shadow-lg">
+      <View className="w-10 h-10 rounded-lg bg-white/15 items-center justify-center mr-4">
+        <Text className="text-xl">{icon}</Text>
+      </View>
+      <Text className="text-white text-base font-semibold">{text}</Text>
     </View>
   );
 }

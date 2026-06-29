@@ -20,11 +20,8 @@ export default function SearchBar({ onSearch, placeholder = 'Search your knowled
     if (trimmed.split(' ').length > 3) {
       setIsNaturalLanguage(true);
       try {
-        const response = await AIService.chatWithKnowledge([
-          { role: 'system', content: 'Convert this natural language query into search keywords. Return only the keywords separated by spaces.' },
-          { role: 'user', content: trimmed }
-        ]);
-        onSearch(response.response);
+        const result = await AIService.generateChatResponse(trimmed, []);
+        onSearch(result.response);
       } catch (error) {
         console.error('Failed to process natural language query:', error);
         onSearch(trimmed);

@@ -1,4 +1,5 @@
 import "../global.css";
+import "./css-interop-setup";
 import { PrivyProvider, usePrivy } from '@privy-io/expo';
 import { Stack, useRouter } from 'expo-router';
 import { View, Text, TouchableOpacity } from 'react-native';

@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Platform, Switch, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, Platform, Switch, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MotiView } from 'moti';
 import { User, Moon, Bell, Download, Shield, Info, ChevronRight, Database } from 'lucide-react-native';
@@ -32,17 +32,24 @@ export default function SettingsScreen() {
 
   const handleClearData = async () => {
     // In a real app, you'd want to confirm this action
-    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
-      try {
-        // Clear local database
-        // await knowledgeDb.clear();
-        // Clear store
-        // get().setItems([]);
-        alert('Local data cleared');
-      } catch (error) {
-        console.error('Failed to clear data:', error);
-      }
-    }
+    Alert.alert(
+      'Clear Data',
+      'Are you sure you want to clear all local data? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Clear', style: 'destructive', onPress: async () => {
+          try {
+            // Clear local database
+            // await knowledgeDb.clear();
+            // Clear store
+            // get().setItems([]);
+            alert('Local data cleared');
+          } catch (error) {
+            console.error('Failed to clear data:', error);
+          }
+        }},
+      ]
+    );
   };
 
   const handleSyncNow = async () => {

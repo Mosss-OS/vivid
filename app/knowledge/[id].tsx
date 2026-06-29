@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useRouter, useParams } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import type { KnowledgeItem } from '../types/knowledge';
 
 export default function KnowledgeDetailScreen() {
   const router = useRouter();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const [sharing, setSharing] = useState(false);
 
   const knowledgeItem: KnowledgeItem = {
