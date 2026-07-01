@@ -4,7 +4,7 @@
     "slug": "vivid",
     "version": "1.0.0",
     "orientation": "portrait",
-"icon": "./assets/vivid-splash.png",
+"icon": "./assets/vivid-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -18,11 +18,11 @@
       "associatedDomains": [
         "applinks:vivid.app"
       ],
-      "icon": "./assets/vivid-splash.png"
+      "icon": "./assets/vivid-icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/vivid-splash.png",
+        "foregroundImage": "./assets/vivid-icon.png",
         "backgroundColor": "#1a1a2e"
       },
       "package": "com.vivid.app",
@@ -62,7 +62,18 @@
       ],
       "expo-sqlite",
       "expo-web-browser",
-      "react-native-quick-crypto"
+      "react-native-quick-crypto",
+      [
+        "@privy-io/expo",
+        {
+          "android": {
+            "packageName": "com.vivid.app"
+          },
+          "ios": {
+            "bundleIdentifier": "com.vivid.app"
+          }
+        }
+      ]
     ],
     "extra": {
       "router": {},

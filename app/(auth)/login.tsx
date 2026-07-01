@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, TouchableOpacity, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { usePrivy, useLoginWithOAuth, useLoginWithEmail } from '@privy-io/expo';
 import { MotiView } from 'moti';
@@ -168,11 +168,12 @@ export default function LoginScreen() {
               transition={{ type: 'spring', duration: 1000 }}
               className="items-center mb-6"
             >
-              <View className="w-36 h-36 rounded-3xl bg-white/15 items-center justify-center mb-4 border-2 border-white/20 shadow-lg">
-                <Text className="text-7xl font-bold text-white drop-shadow-lg">V</Text>
-              </View>
-              <Text className="text-5xl font-bold text-white drop-shadow-lg">Vivid</Text>
-              <Text className="text-lg text-white/90 mt-2 text-center font-medium px-4">
+              <Image
+                source={require('../../assets/vivid-splash.png')}
+                className="w-44 h-32 mb-3"
+                resizeMode="contain"
+              />
+              <Text className="text-lg text-white/90 mt-3 text-center font-medium px-4">
                 Your AI-Powered Second Brain
               </Text>
             </MotiView>
