@@ -102,6 +102,7 @@ export default function RootLayout() {
     <ErrorBoundary>
       <PrivyProvider
         appId="cmolgs0n2014f0dl80cgfiktw"
+        clientId="client-WY6Yg8JUKm2EibrTm6RbbK8CLs9VLeb2nwCSSY36VRAoP"
         loginMethods={{
           email: true,
           google: true,

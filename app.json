@@ -62,18 +62,7 @@
       ],
       "expo-sqlite",
       "expo-web-browser",
-      "react-native-quick-crypto",
-      [
-        "@privy-io/expo",
-        {
-          "android": {
-            "packageName": "com.vivid.app"
-          },
-          "ios": {
-            "bundleIdentifier": "com.vivid.app"
-          }
-        }
-      ]
+      "react-native-quick-crypto"
     ],
     "extra": {
       "router": {},
